@@ -1,6 +1,6 @@
 <?php
 
-namespace notty\rbac\commands;
+namespace mailery\rbac\commands;
 
 use yii\console\controllers\BaseMigrateController;
 use yii\db\Connection;
@@ -45,7 +45,7 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    public $templateFile = '@notty/rbac/views/migration.php';
+    public $templateFile = '@mailery/rbac/views/migration.php';
 
     /**
      * @inheritdoc

@@ -1,6 +1,6 @@
 <?php
 
-namespace notty\rbac\migrations;
+namespace mailery\rbac\migrations;
 
 use yii\base\Component;
 use yii\base\InvalidParamException;
@@ -15,7 +15,7 @@ use yii\rbac\Rule;
 /**
  * Class Migration
  *
- * @package notty\rbac\migrations
+ * @package mailery\rbac\migrations
  */
 class Migration extends Component implements MigrationInterface
 {

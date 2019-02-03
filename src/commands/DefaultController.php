@@ -1,9 +1,9 @@
 <?php
 
-namespace notty\rbac\commands;
+namespace mailery\rbac\commands;
 
 use yii\rbac\ManagerInterface as AuthManager;
-use notty\contracts\User\ManagerInterface as UserManager;
+use mailery\contracts\User\ManagerInterface as UserManager;
 
 class DefaultController extends \yii\console\Controller
 {

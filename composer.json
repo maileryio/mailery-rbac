@@ -30,7 +30,8 @@
         }
     ],
     "require": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "yiisoft/rbac": "^3.0@dev"
     },
     "require-dev": {
         "hiqdev/hidev-php": "<2.0 || dev-master",

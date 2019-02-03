@@ -5,7 +5,7 @@
 echo "<?php\n";
 ?>
 
-use notty\rbac\migrations\Migration;
+use mailery\rbac\migrations\Migration;
 
 class <?= $className; ?> extends Migration
 {

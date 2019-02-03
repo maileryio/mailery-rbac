@@ -1,13 +1,13 @@
 <?php
 
-namespace notty\rbac\filters;
+namespace mailery\rbac\filters;
 
 use Yii;
 use yii\web\User;
 use yii\base\Module;
 use yii\di\Instance;
 use yii\web\ForbiddenHttpException;
-use notty\rbac\helpers\AccessHelper;
+use mailery\rbac\helpers\AccessHelper;
 
 /**
  * Access Control Filter (ACF) is a simple authorization method that is best used by applications that only need some simple access control.
@@ -19,7 +19,7 @@ use notty\rbac\helpers\AccessHelper;
  *
  * ```
  * 'as access' => [
- *     'class' => 'notty\rbac\filters\AccessControl',
+ *     'class' => 'mailery\rbac\filters\AccessControl',
  *     'allowActions' => ['site/login', 'site/error']
  * ]
  * ```

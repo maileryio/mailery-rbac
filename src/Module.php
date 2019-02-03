@@ -1,6 +1,6 @@
 <?php
 
-namespace notty\rbac;
+namespace mailery\rbac;
 
 /**
  * Suggest module
@@ -15,7 +15,7 @@ class Module extends \yii\base\Module
     public function init()
     {
         if (\Yii::$app instanceof \yii\console\Application) {
-            $this->controllerNamespace = 'notty\rbac\commands';
+            $this->controllerNamespace = 'mailery\rbac\commands';
         }
 
         parent::init();

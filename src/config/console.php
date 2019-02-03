@@ -1,10 +1,12 @@
 <?php
 
 return [
-    'controllerMap' => [
-        'migrate' => [
-            'migrationPath' => [
-                '@yii/rbac/migrations',
+    'app' => [
+        'controllerMap' => [
+            'migrate' => [
+                'migrationPath' => [
+                    '@yii/rbac/migrations',
+                ],
             ],
         ],
     ],

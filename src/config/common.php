@@ -1,38 +1,31 @@
 <?php
 
 return [
-    'components' => [
-        'i18n' => [
-            'translations' => [
-                'notty.rbac' => [
-                    'class' => \yii\i18n\PhpMessageSource::class,
-                    'basePath' => '@notty/rbac/messages',
-                    'fileMap' => [
-                        'notty.rbac' => 'messages.php',
-                    ],
-                ],
+    'app' => [
+        'modules' => [
+            'rbac' => [
+                '__class' => \mailery\rbac\Module::class,
+                'layout' => 'simple',
+                'layoutPath' => '@app/views/layouts',
             ],
         ],
-        'authManager' => [
-            'class' => \yii\rbac\DbManager::class,
-            'itemTable' => '{{%auth_items}}',
-            'itemChildTable' => '{{%auth_item_childs}}',
-            'assignmentTable' => '{{%auth_assignments}}',
-            'ruleTable' => '{{%auth_rules}}',
-        ],
     ],
-    'container' => [
-        'definitions' => [
-            \yii\rbac\ManagerInterface::class => function () {
-                return \Yii::$app->authManager;
-            },
-        ],
+    'authManager' => [
+        '__class' => \yii\rbac\DbManager::class,
+        'itemTable' => '{{%auth_items}}',
+        'itemChildTable' => '{{%auth_item_childs}}',
+        'assignmentTable' => '{{%auth_assignments}}',
+        'ruleTable' => '{{%auth_rules}}',
     ],
-    'modules' => [
-        'rbac' => [
-            'class' => \notty\rbac\Module::class,
-            'layout' => 'simple',
-            'layoutPath' => '@notty/views/layouts',
+    'translator' => [
+        'translations' => [
+            'app.rbac' => [
+                '__class' => yii\i18n\PhpMessageSource::class,
+                'basePath' => '@mailery/messages',
+                'fileMap' => [
+                    'app.rbac' => 'messages.php',
+                ],
+            ],
         ],
     ],
 ];

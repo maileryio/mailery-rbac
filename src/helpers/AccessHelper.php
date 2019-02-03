@@ -1,6 +1,6 @@
 <?php
 
-namespace notty\rbac\helpers;
+namespace mailery\rbac\helpers;
 
 use Yii;
 use yii\web\User;
