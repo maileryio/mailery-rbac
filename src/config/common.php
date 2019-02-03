@@ -31,4 +31,5 @@ return [
     \yii\rbac\BaseManager::class => \yii\di\Reference::to('authManager'),
     \yii\rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
     \mailery\rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
+    \yii\rbac\CheckAccessInterface::class => \yii\di\Reference::to('authManager'),
 ];
