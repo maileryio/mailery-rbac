@@ -2,11 +2,13 @@
 
 namespace mailery\rbac\commands;
 
+use yii\helpers\Yii;
 use yii\console\controllers\BaseMigrateController;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\di\Instance;
 use yii\helpers\Console;
+use yii\base\Action;
+use yii\rbac\DbManager;
 
 /**
  * Class MigrateController
@@ -40,7 +42,7 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    public $migrationPath = '@app/rbac/migrations';
+    public $migrationPath = ['@app/rbac/migrations'];
 
     /**
      * @inheritdoc
@@ -48,21 +50,32 @@ class MigrateController extends BaseMigrateController
     public $templateFile = '@mailery/rbac/views/migration.php';
 
     /**
-     * @inheritdoc
+     * This method is invoked right before an action is to be executed (after all possible filters.)
+     * It checks the existence of the [[migrationPath]].
+     * @param \yii\base\Action $action the action to be executed.
+     * @return bool whether the action should continue to be executed.
      */
-    public function init()
+    public function beforeAction(Action $action): bool
     {
-        $this->db = Instance::ensure($this->db, Connection::class);
+        if (parent::beforeAction($action)) {
+            $this->db = Yii::ensureObject($this->db, Connection::class);
+            return true;
+        }
 
-        parent::init();
+        return false;
     }
 
     /**
-     * @return Connection
+     * @inheritdoc
      */
-    public function getDb(): Connection
+    protected function createMigration($class)
     {
-        return $this->db;
+        $migration = parent::createMigration($class);
+        if ($migration->hasProperty('authManager')) {
+            $migration->authManager = Yii::ensureObject($migration->authManager, DbManager::class);
+        }
+
+        return $migration;
     }
 
     /**

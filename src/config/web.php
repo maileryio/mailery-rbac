@@ -1,8 +1,10 @@
 <?php
 
 return [
-    'as access' => [
-        'class' => \mailery\rbac\filters\AccessControl::class,
+    'app' => [
+        'as access' => [
+            '__class' => \mailery\rbac\filters\AccessControl::class,
+        ],
     ],
 //    'components' => [
 //        'menuManager' => [

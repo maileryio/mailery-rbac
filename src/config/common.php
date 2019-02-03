@@ -10,13 +10,6 @@ return [
             ],
         ],
     ],
-    'authManager' => [
-        '__class' => \yii\rbac\DbManager::class,
-        'itemTable' => '{{%auth_items}}',
-        'itemChildTable' => '{{%auth_item_childs}}',
-        'assignmentTable' => '{{%auth_assignments}}',
-        'ruleTable' => '{{%auth_rules}}',
-    ],
     'translator' => [
         'translations' => [
             'app.rbac' => [
@@ -28,4 +21,14 @@ return [
             ],
         ],
     ],
+    'authManager' => [
+        '__class' => \mailery\rbac\components\DbManager::class,
+        'itemTable' => '{{%auth_items}}',
+        'itemChildTable' => '{{%auth_item_childs}}',
+        'assignmentTable' => '{{%auth_assignments}}',
+        'ruleTable' => '{{%auth_rules}}',
+    ],
+    \yii\rbac\BaseManager::class => \yii\di\Reference::to('authManager'),
+    \yii\rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
+    \mailery\rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
 ];

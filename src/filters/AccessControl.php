@@ -2,10 +2,9 @@
 
 namespace mailery\rbac\filters;
 
-use Yii;
+use yii\helpers\Yii;
 use yii\web\User;
 use yii\base\Module;
-use yii\di\Instance;
 use yii\web\ForbiddenHttpException;
 use mailery\rbac\helpers\AccessHelper;
 
@@ -46,7 +45,7 @@ class AccessControl extends \yii\base\ActionFilter
     public function getUser()
     {
         if (!$this->user instanceof User) {
-            $this->user = Instance::ensure($this->user, User::class);
+            $this->user = Yii::ensureObject($this->user, User::class);
         }
         return $this->user;
     }
@@ -68,7 +67,7 @@ class AccessControl extends \yii\base\ActionFilter
         $actionId = $action->getUniqueId();
         $user = $this->getUser();
 
-        if (AccessHelper::checkRoute('/' . $actionId, Yii::$app->getRequest()->get(), $user)) {
+        if (AccessHelper::checkRoute('/' . $actionId, Yii::get('app')->getRequest()->get(), $user)) {
             return parent::beforeAction($action);
         }
 
@@ -97,10 +96,6 @@ class AccessControl extends \yii\base\ActionFilter
     protected function isActive($action)
     {
         $uniqueId = $action->getUniqueId();
-
-        if ($this->compareRoute($uniqueId, Yii::$app->getErrorHandler()->errorAction)) {
-            return false;
-        }
 
         $user = $this->getUser();
         if ($user->getIsGuest()) {

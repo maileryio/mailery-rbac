@@ -2,10 +2,10 @@
 
 namespace mailery\rbac\commands;
 
-use yii\rbac\ManagerInterface as AuthManager;
-use mailery\contracts\User\ManagerInterface as UserManager;
+use mailery\rbac\ManagerInterface as AuthManager;
+use mailery\user\ManagerInterface as UserManager;
 
-class DefaultController extends \yii\console\Controller
+class AssignController extends \yii\console\Controller
 {
 
     /**
@@ -37,7 +37,7 @@ class DefaultController extends \yii\console\Controller
      * @param string $email
      * @return int
      */
-    public function actionAssign(string $roleName, string $email)
+    public function actionIndex(string $roleName, string $email)
     {
         $role = $this->authManager->getRole($roleName);
 

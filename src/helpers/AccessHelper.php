@@ -2,20 +2,20 @@
 
 namespace mailery\rbac\helpers;
 
-use Yii;
+use yii\helpers\Yii;
 use yii\web\User;
 
 class AccessHelper
 {
 
     /**
-     * Check access route for rbac.
+     * Check access route for rbac
      * @param string|array $route
      * @param array $params
      * @param integer|User $user
      * @return boolean
      */
-    public static function checkRoute($route, $params = [], User $user = null)
+    public static function checkRoute($route, array $params, User $user)
     {
         $r = static::normalizeRoute($route);
         if ($user->can($r, $params)) {
@@ -32,19 +32,18 @@ class AccessHelper
 
     /**
      * Normalize route
-     *
      * @param string $route Plain route string
      * @return string Normalized route string
      */
     protected static function normalizeRoute($route)
     {
         if ($route === '') {
-            $normalized = '/' . Yii::$app->controller->getRoute();
+            $normalized = '/' . Yii::get('app')->controller->getRoute();
         } elseif (strncmp($route, '/', 1) === 0) {
             $normalized = $route;
         } elseif (strpos($route, '/') === false) {
-            $normalized = '/' . Yii::$app->controller->getUniqueId() . '/' . $route;
-        } elseif (($mid = Yii::$app->controller->module->getUniqueId()) !== '') {
+            $normalized = '/' . Yii::get('app')->controller->getUniqueId() . '/' . $route;
+        } elseif (($mid = Yii::get('app')->controller->module->getUniqueId()) !== '') {
             $normalized = '/' . $mid . '/' . $route;
         } else {
             $normalized = '/' . $route;
