@@ -1,0 +1,62 @@
+{
+    "name": "maileryio/mailery-rbac",
+    "type": "library",
+    "description": "Role based access control(RBAC) module for Mailery Platform",
+    "keywords": [
+        "yii",
+        "mailery",
+        "module",
+        "rbac"
+    ],
+    "homepage": "https://github.com/maileryio/mailery-rbac",
+    "license": "BSD-3-Clause",
+    "support": {
+        "email": "support@mailery.io",
+        "source": "https://github.com/maileryio/mailery-rbac",
+        "issues": "https://github.com/maileryio/mailery-rbac/issues",
+        "wiki": "https://github.com/maileryio/mailery-rbac/wiki",
+        "forum": "https://forum.mailery.io/"
+    },
+    "authors": [
+        {
+            "name": "Igor Maliy",
+            "role": "Project lead",
+            "email": "filsh@mailery.io"
+        },
+        {
+            "name": "David Carey",
+            "role": "Developer",
+            "email": "careydavid@mailery.io"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "require-dev": {
+        "hiqdev/hidev-php": "<2.0 || dev-master",
+        "hiqdev/composer-config-plugin": "^0.2.5",
+        "maileryio/hidev-mailery": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "mailery\\rbac\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        },
+        "config-plugin": {
+            "params": "src/config/params.php",
+            "common": "src/config/common.php",
+            "console": [
+                "$common",
+                "src/config/console.php"
+            ],
+            "web": [
+                "$common",
+                "src/config/web.php"
+            ]
+        }
+    }
+}
