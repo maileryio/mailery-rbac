@@ -14,7 +14,7 @@ return [
         'translations' => [
             'app.rbac' => [
                 '__class' => yii\i18n\PhpMessageSource::class,
-                'basePath' => '@mailery/messages',
+                'basePath' => '@mailery/rbac/messages',
                 'fileMap' => [
                     'app.rbac' => 'messages.php',
                 ],
