@@ -110,6 +110,11 @@ class AccessControl extends \yii\base\ActionFilter
             }
         }
 
+        $errorHandler = Yii::get('errorHandler');
+        if (!empty($errorHandler) && $this->compareRoute($uniqueId, $errorHandler->errorAction)) {
+            return false;
+        }
+
         if ($this->owner instanceof Module) {
             // convert action uniqueId into an ID relative to the module
             $mid = $this->owner->getUniqueId();
