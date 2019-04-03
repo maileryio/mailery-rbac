@@ -167,7 +167,7 @@ class Migration extends Component implements MigrationInterface
             ];
         }
         /** @var Rule $rule */
-        $rule = \Yii::createObject($definition);
+        $rule = \yii\helpers\Yii::createObject($definition);
         $this->authManager->add($rule);
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 
@@ -385,7 +385,7 @@ class Migration extends Component implements MigrationInterface
         echo "    > update rule $ruleName ...";
         $time = microtime(true);
         /** @var Rule $rule */
-        $rule = \Yii::createObject([
+        $rule = \yii\helpers\Yii::createObject([
                     'class' => $className,
                     'name' => $ruleName,
         ]);
