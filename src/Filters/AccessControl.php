@@ -1,12 +1,12 @@
 <?php
 
-namespace mailery\rbac\filters;
+namespace Mailery\Rbac\Filters;
 
 use yii\helpers\Yii;
 use yii\web\User;
 use yii\base\Module;
 use yii\web\ForbiddenHttpException;
-use mailery\rbac\helpers\AccessHelper;
+use Mailery\Rbac\Helpers\AccessHelper;
 
 /**
  * Access Control Filter (ACF) is a simple authorization method that is best used by applications that only need some simple access control.
@@ -18,7 +18,7 @@ use mailery\rbac\helpers\AccessHelper;
  *
  * ```
  * 'as access' => [
- *     'class' => 'mailery\rbac\filters\AccessControl',
+ *     'class' => 'Mailery\Rbac\Filters\AccessControl',
  *     'allowActions' => ['site/login', 'site/error']
  * ]
  * ```

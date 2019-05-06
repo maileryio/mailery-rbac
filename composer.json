@@ -40,7 +40,7 @@
     },
     "autoload": {
         "psr-4": {
-            "mailery\\rbac\\": "src"
+            "Mailery\\Rbac\\": "src"
         }
     },
     "extra": {

@@ -3,7 +3,7 @@
 return [
     'app' => [
         'as access' => [
-            '__class' => \mailery\rbac\filters\AccessControl::class,
+            '__class' => \Mailery\Rbac\Filters\AccessControl::class,
         ],
     ],
     'menuManager' => [

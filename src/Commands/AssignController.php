@@ -1,11 +1,11 @@
 <?php
 
-namespace mailery\rbac\commands;
+namespace Mailery\Rbac\Commands;
 
-use mailery\rbac\ManagerInterface as AuthManager;
-use mailery\user\ManagerInterface as UserManager;
+use Mailery\Rbac\ManagerInterface as AuthManager;
+use Mailery\User\ManagerInterface as UserManager;
 
-class AssignController extends \yii\console\Controller
+class AssignController extends \Yiisoft\Yii\Console\Controller
 {
 
     /**

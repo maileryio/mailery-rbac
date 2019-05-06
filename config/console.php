@@ -4,13 +4,12 @@ return [
     'app' => [
         'modules' => [
             'rbac' => [
-                'controllerNamespace' => 'mailery\rbac\commands',
+                'controllerNamespace' => 'Mailery\Rbac\Commands',
                 'controllerMap' => [
                     'migrate' => [
-                        '__class' => \mailery\rbac\commands\MigrateController::class,
+                        '__class' => \Mailery\Rbac\Commands\MigrateController::class,
                         'migrationPath' => [
                             '@app/rbac/migrations',
-                            '@mailery/rbac/migrations',
                         ],
                     ],
                 ],
@@ -19,7 +18,7 @@ return [
         'controllerMap' => [
             'migrate' => [
                 'migrationPath' => [
-                    '@yii/rbac/migrations',
+                    '@Yiisoft/Rbac/migrations',
                 ],
             ],
         ],

@@ -1,14 +1,14 @@
 <?php
 
-namespace mailery\rbac\components;
+namespace Mailery\Rbac;
 
-class DbManager extends \yii\rbac\DbManager implements \mailery\rbac\ManagerInterface
+class DbManager extends \Yiisoft\Rbac\DbManager implements \Mailery\Rbac\ManagerInterface
 {
 
     /**
      * @inheritdoc
      */
-    public function getAdminUserRole(): \yii\rbac\Role
+    public function getAdminUserRole(): \Yiisoft\Rbac\Role
     {
         return $this->getRole('admin');
     }
@@ -17,7 +17,7 @@ class DbManager extends \yii\rbac\DbManager implements \mailery\rbac\ManagerInte
      * @todo move to setting via user interface or config file
      * @inheritdoc
      */
-    public function getDefaultUserRole(): \yii\rbac\Role
+    public function getDefaultUserRole(): \Yiisoft\Rbac\Role
     {
         return $this->getRole('admin');
     }

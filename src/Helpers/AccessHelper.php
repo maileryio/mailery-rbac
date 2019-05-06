@@ -1,6 +1,6 @@
 <?php
 
-namespace mailery\rbac\helpers;
+namespace Mailery\Rbac\Helpers;
 
 use yii\helpers\Yii;
 use yii\web\User;

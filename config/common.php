@@ -4,7 +4,7 @@ return [
     'app' => [
         'modules' => [
             'rbac' => [
-                '__class' => \mailery\rbac\Module::class,
+                '__class' => \Mailery\Rbac\Module::class,
                 'layout' => 'simple',
                 'layoutPath' => '@app/views/layouts',
             ],
@@ -13,8 +13,8 @@ return [
     'translator' => [
         'translations' => [
             'app.rbac' => [
-                '__class' => yii\i18n\PhpMessageSource::class,
-                'basePath' => '@mailery/rbac/messages',
+                '__class' => \Yiisoft\I18n\Resource\PhpFile::class,
+                'basePath' => '@Mailery/Rbac/messages',
                 'fileMap' => [
                     'app.rbac' => 'messages.php',
                 ],
@@ -22,14 +22,13 @@ return [
         ],
     ],
     'authManager' => [
-        '__class' => \mailery\rbac\components\DbManager::class,
+        '__class' => \Mailery\Rbac\DbManager::class,
         'itemTable' => '{{%auth_items}}',
         'itemChildTable' => '{{%auth_item_childs}}',
         'assignmentTable' => '{{%auth_assignments}}',
         'ruleTable' => '{{%auth_rules}}',
     ],
-    \yii\rbac\BaseManager::class => \yii\di\Reference::to('authManager'),
-    \yii\rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
-    \mailery\rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
-    \yii\rbac\CheckAccessInterface::class => \yii\di\Reference::to('authManager'),
+    \Yiisoft\Rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
+    \Mailery\Rbac\ManagerInterface::class => \yii\di\Reference::to('authManager'),
+    \Yiisoft\Rbac\CheckAccessInterface::class => \yii\di\Reference::to('authManager'),
 ];

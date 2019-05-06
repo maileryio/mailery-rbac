@@ -1,26 +1,26 @@
 <?php
 
-namespace mailery\rbac\migrations;
+namespace Mailery\Rbac;
 
 use yii\base\Component;
 use yii\exceptions\InvalidArgumentException;
-use yii\db\MigrationInterface;
-use yii\rbac\DbManager;
-use yii\rbac\Item;
-use yii\rbac\Permission;
-use yii\rbac\Role;
-use yii\rbac\Rule;
+use Yiisoft\Db\MigrationInterface;
+use Yiisoft\Rbac\DbManager;
+use Yiisoft\Rbac\Item;
+use Yiisoft\Rbac\Permission;
+use Yiisoft\Rbac\Role;
+use Yiisoft\Rbac\Rule;
 
 /**
  * Class Migration
  *
- * @package mailery\rbac\migrations
+ * @package Mailery\Rbac
  */
 class Migration extends Component implements MigrationInterface
 {
 
     /**
-     * @var string|DbManager The auth manager component ID that this migration should work with. This property ensured by method mailery\rbac\commands\MigrateController::createMigration()
+     * @var string|DbManager The auth manager component ID that this migration should work with. This property ensured by method Mailery\Rbac\commands\MigrateController::createMigration()
      */
     public $authManager = 'authManager';
 

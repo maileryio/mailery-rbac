@@ -4,5 +4,5 @@ package:
     title:          Role based access control(RBAC) module for Mailery Platform
     headline:       Rbac Module
     keywords:       yii, mailery, module, rbac
-    namespace:      mailery\rbac
+    namespace:      Mailery\Rbac
     description:    Role based access control(RBAC) module for Mailery Platform
