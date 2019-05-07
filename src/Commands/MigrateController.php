@@ -8,7 +8,7 @@ use Yiisoft\Db\Connection;
 use Yiisoft\Db\Query;
 use yii\helpers\Console;
 use yii\base\Action;
-use Mailery\Rbac\ManagerInterface as RbacManager;
+use Mailery\Rbac\ManagerInterface as AuthManager;
 
 /**
  * Class MigrateController
@@ -72,7 +72,7 @@ class MigrateController extends BaseMigrateController
     {
         $migration = parent::createMigration($class);
         if ($migration->hasProperty('authManager')) {
-            $migration->authManager = Yii::ensureObject($migration->authManager, RbacManager::class);
+            $migration->authManager = Yii::ensureObject($migration->authManager, AuthManager::class);
         }
 
         return $migration;

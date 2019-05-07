@@ -13,8 +13,8 @@ return [
     'translator' => [
         'translations' => [
             'app.rbac' => [
-                '__class' => \Yiisoft\I18n\Resource\PhpFile::class,
-                'basePath' => '@Mailery/Rbac/messages',
+                '__class' => \yii\i18n\PhpMessageSource::class,
+                'basePath' => '@mailery/rbac/messages',
                 'fileMap' => [
                     'app.rbac' => 'messages.php',
                 ],
