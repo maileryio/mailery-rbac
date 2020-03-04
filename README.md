@@ -1,14 +1,14 @@
-# Rbac Module
+# Rbac module for Mailery Platform
 
-**Role based access control(RBAC) module for Mailery Platform**
+**Rbac module for Mailery Platform**
 
 [![Latest Stable Version](https://poser.pugx.org/maileryio/mailery-rbac/v/stable)](https://packagist.org/packages/maileryio/mailery-rbac)
 [![Total Downloads](https://poser.pugx.org/maileryio/mailery-rbac/downloads)](https://packagist.org/packages/maileryio/mailery-rbac)
-[![Build Status](https://img.shields.io/travis/maileryio/mailery-rbac.svg)](https://travis-ci.org/maileryio/mailery-rbac)
-[![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/maileryio/mailery-rbac.svg)](https://scrutinizer-ci.com/g/maileryio/mailery-rbac/)
+[![Build Status](https://travis-ci.com/maileryio/mailery-rbac.svg?branch=master)](https://travis-ci.com/maileryio/mailery-rbac)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/maileryio/mailery-rbac.svg)](https://scrutinizer-ci.com/g/maileryio/mailery-rbac/)
+[![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/maileryio/mailery-rbac.svg)](https://scrutinizer-ci.com/g/maileryio/mailery-rbac/)
 
-Role based access control(RBAC) module for Mailery Platform
+Rbac module for Mailery Platform
 
 ## Installation
 
@@ -33,4 +33,4 @@ to the require section of your composer.json.
 This project is released under the terms of the BSD-3-Clause [license](LICENSE).
 Read more [here](http://choosealicense.com/licenses/bsd-3-clause).
 
-Copyright © 2019, Mailery (https://mailery.io/)
+Copyright © 2020, Mailery (https://mailery.io)

@@ -1,8 +1,0 @@
-package:
-    type:           library
-    name:           mailery-rbac
-    title:          Role based access control(RBAC) module for Mailery Platform
-    headline:       Rbac Module
-    keywords:       yii, mailery, module, rbac
-    namespace:      Mailery\Rbac
-    description:    Role based access control(RBAC) module for Mailery Platform

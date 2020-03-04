@@ -1,3 +1,8 @@
 <?php
 
-return [];
+return [
+    'rbac' => [
+        'directory' => '@root/rbac',
+        'defaultRoles' => ['admin', 'guest'],
+    ],
+];

@@ -1,47 +1,52 @@
 {
     "name": "maileryio/mailery-rbac",
     "type": "library",
-    "description": "Role based access control(RBAC) module for Mailery Platform",
+    "description": "Rbac module for Mailery Platform",
     "keywords": [
-        "yii",
-        "mailery",
-        "module",
+        "mail",
+        "mailer",
         "rbac"
     ],
     "homepage": "https://github.com/maileryio/mailery-rbac",
     "license": "BSD-3-Clause",
     "support": {
-        "email": "support@mailery.io",
         "source": "https://github.com/maileryio/mailery-rbac",
         "issues": "https://github.com/maileryio/mailery-rbac/issues",
-        "wiki": "https://github.com/maileryio/mailery-rbac/wiki",
-        "forum": "https://forum.mailery.io/"
+        "wiki": "https://github.com/maileryio/mailery-rbac/wiki"
     },
-    "authors": [
-        {
-            "name": "Igor Maliy",
-            "role": "Project lead",
-            "email": "filsh@mailery.io"
-        },
-        {
-            "name": "David Carey",
-            "role": "Developer",
-            "email": "careydavid@mailery.io"
-        }
-    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
-        "php": ">=7.1",
-        "yiisoft/rbac": "^3.0@dev"
+        "php": "^7.4",
+        "cycle/orm": "^1.2",
+        "foxy/foxy": "^1.0",
+        "form-manager/form-manager": "^6.0",
+        "maileryio/mailery-web": "dev-master",
+        "maileryio/widget-dataview": "dev-master",
+        "maileryio/widget-link": "dev-master",
+        "maileryio/widget-form": "dev-master",
+        "yiisoft/router": "^3.0@dev"
     },
     "require-dev": {
-        "hiqdev/hidev-php": "<2.0 || dev-master",
-        "hiqdev/composer-config-plugin": "^0.2.5",
-        "maileryio/hidev-mailery": "dev-master"
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "hiqdev/composer-config-plugin": "^1.0",
+        "phan/phan": "^2.4",
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
             "Mailery\\Rbac\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mailery\\Rbac\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix --diff --dry-run",
+        "fix": "php-cs-fixer fix",
+        "phan": "phan --progress-bar -o analysis.txt"
     },
     "extra": {
         "branch-alias": {
@@ -49,15 +54,14 @@
         },
         "config-plugin": {
             "params": "config/params.php",
-            "common": "config/common.php",
-            "console": [
-                "$common",
-                "config/console.php"
-            ],
-            "web": [
-                "$common",
-                "config/web.php"
-            ]
+            "web": "config/web.php"
         }
+    },
+    "config": {
+        "foxy": {
+            "enabled": true,
+            "manager": "yarn"
+        },
+        "sort-packages": true
     }
 }
