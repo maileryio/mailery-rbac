@@ -1,6 +1,6 @@
 <?php
 
-use Mailery\Web\Backend\Widget\FormRenderer;
+use Mailery\Widget\Form\FormRenderer;
 
 /** @var Mailery\Web\View\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -9,19 +9,21 @@ use Mailery\Web\Backend\Widget\FormRenderer;
 
 $this->setTitle('New Rule');
 
-$this->addBreadcrumb([
-    'label' => 'Rules',
-    'url' => $urlGenerator->generate('/rbac/rule/index'),
-    'class' => 'text-muted',
-]);
-$this->addBreadcrumb('New Rule');
-
-?><div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-12 grid-margin">
-                <?= (new FormRenderer())($ruleForm, $submitted) ?>
+?><div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h2">New Rule</h1>
+            <div class="btn-toolbar float-right">
+                <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/rule/index') ?>">
+                    Back
+                </a>
             </div>
         </div>
+    </div>
+</div>
+<div class="mb-2"></div>
+<div class="row">
+    <div class="col-12">
+        <?= (new FormRenderer())($ruleForm, $submitted) ?>
     </div>
 </div>

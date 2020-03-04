@@ -3,9 +3,8 @@
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Controller;
-use Mailery\Web\Exception\NotFoundHttpException;
 use Mailery\Rbac\Form\RoleForm;
-use Mailery\Dataview\Paginator\OffsetPaginator;
+use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,8 +41,6 @@ class RoleController extends Controller
      */
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $queryParams = $request->getQueryParams();
 
         $dataReader = (new IterableDataReader($this->rbacManager->getRoles()))
@@ -52,11 +49,7 @@ class RoleController extends Controller
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
 
-        $output = $this->render('index', compact('dataReader', 'paginator'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('index', compact('dataReader', 'paginator'));
     }
 
     /**
@@ -67,8 +60,6 @@ class RoleController extends Controller
      */
     public function create(ServerRequestInterface $request, RoleForm $roleForm, UrlGeneratorInterface $urlGenerator): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $roleForm
             ->setAttributes([
                 'action' => $request->getUri()->getPath(),
@@ -82,17 +73,13 @@ class RoleController extends Controller
             $roleForm->loadFromServerRequest($request);
 
             if ($roleForm->isValid() && ($role = $roleForm->save()) !== null) {
-                return $response
-                    ->withStatus(302)
+                return $this->getResponseFactory()
+                    ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $role->getName()]));
             }
         }
 
-        $output = $this->render('create', compact('roleForm', 'submitted'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('create', compact('roleForm', 'submitted'));
     }
 
     /**
@@ -101,18 +88,13 @@ class RoleController extends Controller
      */
     public function view(ServerRequestInterface $request): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $name = $request->getAttribute('name');
         if (empty($name) || ($role = $this->rbacManager->getRole($name)) === null) {
-            throw new NotFoundHttpException();
+            return $this->getResponseFactory()
+                ->createResponse(404);
         }
 
-        $output = $this->render('view', compact('role'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('view', compact('role'));
     }
 
     /**
@@ -120,15 +102,13 @@ class RoleController extends Controller
      * @param RoleForm $roleForm
      * @param UrlGeneratorInterface $urlGenerator
      * @return ResponseInterface
-     * @throws NotFoundHttpException
      */
     public function edit(ServerRequestInterface $request, RoleForm $roleForm, UrlGeneratorInterface $urlGenerator): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $name = $request->getAttribute('name');
         if (empty($name) || ($role = $this->rbacManager->getRole($name)) === null) {
-            throw new NotFoundHttpException();
+            return $this->getResponseFactory()
+                ->createResponse(404);
         }
 
         $roleForm
@@ -145,38 +125,32 @@ class RoleController extends Controller
             $roleForm->loadFromServerRequest($request);
 
             if ($roleForm->isValid() && ($role = $roleForm->save()) !== null) {
-                return $response
-                    ->withStatus(302)
+                return $this->getResponseFactory()
+                    ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $role->getName()]));
             }
         }
 
-        $output = $this->render('edit', compact('role', 'roleForm', 'submitted'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('edit', compact('role', 'roleForm', 'submitted'));;
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param UrlGeneratorInterface $urlGenerator
      * @return ResponseInterface
-     * @throws NotFoundHttpException
      */
     public function delete(ServerRequestInterface $request, UrlGeneratorInterface $urlGenerator): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $name = $request->getAttribute('name');
         if (empty($name) || ($role = $this->rbacManager->getRole($name)) === null) {
-            throw new NotFoundHttpException();
+            return $this->getResponseFactory()
+                ->createResponse(404);
         }
 
         $this->rbacManager->remove($role);
 
-        return $response
-            ->withStatus(303)
+        return $this->getResponseFactory()
+            ->createResponse(303)
             ->withHeader('Location', $urlGenerator->generate('/rbac/role/index'));
     }
 

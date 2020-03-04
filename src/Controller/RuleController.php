@@ -3,9 +3,8 @@
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Controller;
-use Mailery\Web\Exception\NotFoundHttpException;
 use Mailery\Rbac\Form\RuleForm;
-use Mailery\Dataview\Paginator\OffsetPaginator;
+use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,8 +41,6 @@ class RuleController extends Controller
      */
     public function index(ServerRequestInterface $request): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $queryParams = $request->getQueryParams();
 
         $dataReader = (new IterableDataReader($this->rbacManager->getRules()))
@@ -52,11 +49,7 @@ class RuleController extends Controller
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
 
-        $output = $this->render('index', compact('dataReader', 'paginator'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('index', compact('dataReader', 'paginator'));
     }
 
     /**
@@ -67,8 +60,6 @@ class RuleController extends Controller
      */
     public function create(ServerRequestInterface $request, RuleForm $ruleForm, UrlGeneratorInterface $urlGenerator): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $ruleForm
             ->setAttributes([
                 'action' => $request->getUri()->getPath(),
@@ -82,17 +73,13 @@ class RuleController extends Controller
             $ruleForm->loadFromServerRequest($request);
 
             if ($ruleForm->isValid() && ($rule = $ruleForm->save()) !== null) {
-                return $response
-                    ->withStatus(302)
+                return $this->getResponseFactory()
+                    ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
             }
         }
 
-        $output = $this->render('create', compact('ruleForm', 'submitted'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('create', compact('ruleForm', 'submitted'));
     }
 
     /**
@@ -101,18 +88,13 @@ class RuleController extends Controller
      */
     public function view(ServerRequestInterface $request): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $name = $request->getAttribute('name');
         if (empty($name) || ($rule = $this->rbacManager->getRule($name)) === null) {
-            throw new NotFoundHttpException();
+            return $this->getResponseFactory()
+                ->createResponse(404);
         }
 
-        $output = $this->render('view', compact('rule'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('view', compact('rule'));
     }
 
     /**
@@ -120,15 +102,13 @@ class RuleController extends Controller
      * @param RuleForm $ruleForm
      * @param UrlGeneratorInterface $urlGenerator
      * @return ResponseInterface
-     * @throws NotFoundHttpException
      */
     public function edit(ServerRequestInterface $request, RuleForm $ruleForm, UrlGeneratorInterface $urlGenerator): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $name = $request->getAttribute('name');
         if (empty($name) || ($rule = $this->rbacManager->getRule($name)) === null) {
-            throw new NotFoundHttpException();
+            return $this->getResponseFactory()
+                ->createResponse(404);
         }
 
         $ruleForm
@@ -145,38 +125,32 @@ class RuleController extends Controller
             $ruleForm->loadFromServerRequest($request);
 
             if ($ruleForm->isValid() && ($rule = $ruleForm->save()) !== null) {
-                return $response
-                    ->withStatus(302)
+                return $this->getResponseFactory()
+                    ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
             }
         }
 
-        $output = $this->render('edit', compact('rule', 'ruleForm', 'submitted'));
-
-        $response->getBody()->write($output);
-
-        return $response;
+        return $this->render('edit', compact('rule', 'ruleForm', 'submitted'));
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param UrlGeneratorInterface $urlGenerator
      * @return ResponseInterface
-     * @throws NotFoundHttpException
      */
     public function delete(ServerRequestInterface $request, UrlGeneratorInterface $urlGenerator): ResponseInterface
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $name = $request->getAttribute('name');
         if (empty($name) || ($rule = $this->rbacManager->getRule($name)) === null) {
-            throw new NotFoundHttpException();
+            return $this->getResponseFactory()
+                ->createResponse(404);
         }
 
         $this->rbacManager->remove($rule);
 
-        return $response
-            ->withStatus(303)
+        return $this->getResponseFactory()
+            ->createResponse(302)
             ->withHeader('Location', $urlGenerator->generate('/rbac/rule/index'));
     }
 

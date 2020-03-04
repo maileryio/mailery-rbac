@@ -40,9 +40,9 @@ class PermissionForm extends Form
         $this->permission = $permission;
         $this->offsetSet('', F::submit('Update'));
 
-        $this['name']->setValue($role->getName());
-        $this['ruleName']->setValue($role->getRuleName());
-        $this['description']->setValue($role->getDescription());
+        $this['name']->setValue($permission->getName());
+        $this['ruleName']->setValue($permission->getRuleName());
+        $this['description']->setValue($permission->getDescription());
 
         return $this;
     }
