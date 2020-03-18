@@ -1,12 +1,15 @@
 <?php
 
 use Mailery\Menu\MenuItem;
+use Mailery\Rbac\Controller\AssignController;
 use Mailery\Rbac\Controller\RoleController;
 use Mailery\Rbac\Controller\RuleController;
 use Mailery\Rbac\Controller\PermissionController;
 use Yiisoft\Router\Route;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Opis\Closure\SerializableClosure;
+use Mailery\Web\Assets\AppAssetBundle;
+use Mailery\Rbac\Assets\RbacAssetBundle;
 
 return [
     'rbacNavbarMenuItem' => (new MenuItem())
@@ -28,6 +31,16 @@ return [
                         return $urlGenerator->generate('/rbac/permission/index');
                     })),
             ]),
+
+    'assetManager' => [
+        'bundles' => [
+            AppAssetBundle::class => [
+                'depends' => [
+                    RbacAssetBundle::class,
+                ],
+            ],
+        ],
+    ],
 
     'rbac' => [
         'directory' => '@root/rbac',
@@ -59,6 +72,14 @@ return [
                 ->name('/rbac/role/delete'),
             '/rbac/role/create' => Route::methods(['GET', 'POST'], '/rbac/role/create', [RoleController::class, 'create'])
                 ->name('/rbac/role/create'),
+            '/rbac/role/assign' => Route::post('/rbac/role/assign', [AssignController::class, 'assign'])
+                ->name('/rbac/role/assign'),
+            '/rbac/role/unassign' => Route::post('/rbac/role/unassign', [AssignController::class, 'unassign'])
+                ->name('/rbac/role/unassign'),
+            '/rbac/role/assigned' => Route::get('/rbac/role/assigned', [AssignController::class, 'assigned'])
+                ->name('/rbac/role/assigned'),
+            '/rbac/role/unassigned' => Route::get('/rbac/role/unassigned', [AssignController::class, 'unassigned'])
+                ->name('/rbac/role/unassigned'),
 
             // rules
             '/rbac/rule/index' => Route::get('/rbac/rule/index', [RuleController::class, 'index'])

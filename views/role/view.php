@@ -77,65 +77,18 @@ $this->setTitle($role->getName());
 <div class="mb-2"></div>
 <div class="row">
     <div class="col-12 grid-margin">
-        <?php
-            $items = [
-                [
-                    'id' => 1,
-                    'label' => 'JavaScript',
-                    'children' => [
-                        [
-                            'id' => 2,
-                            'label' => 'jQuery',
-                            'children' => [],
-                        ],
-                        [
-                            'id' => 3,
-                            'label' => 'AngularJS',
-                            'children' => [
-                                [
-                                    'id' => 5,
-                                    'label' => 'Java',
-                                    'checked' => true,
-                                    'children' => [],
-                                ],
-                                [
-                                    'id' => 6,
-                                    'label' => 'Python',
-                                    'children' => [],
-                                ]
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'id' => 7,
-                    'label' => 'JavaScript',
-                    'children' => [
-                        [
-                            'id' => 8,
-                            'label' => 'jQuery',
-                            'children' => [],
-                        ],
-                        [
-                            'id' => 9,
-                            'label' => 'AngularJS',
-                            'children' => [
-                                [
-                                    'id' => 10,
-                                    'label' => 'Java',
-                                    'children' => [],
-                                ],
-                                [
-                                    'id' => 11,
-                                    'label' => 'xxx',
-                                    'children' => [],
-                                ]
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-        ?>
-        <dual-listbox items="<?= Html::encode(json_encode($items)); ?>"></dual-listbox>
+        <ui-dual-treeview
+            fetch-assigned-url="<?= $urlGenerator->generate('/rbac/role/assigned', ['name' => $role->getName()]) ?>"
+            fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/role/unassigned', ['name' => $role->getName()]) ?>"
+            post-assign-url="<?= $urlGenerator->generate('/rbac/role/assign', ['name' => $role->getName()]) ?>"
+            post-unassign-url="<?= $urlGenerator->generate('/rbac/role/unassign', ['name' => $role->getName()]) ?>"
+        >
+            <template v-slot:assign-button-content>
+                <?= Icon::widget()->name('chevron-right');?>
+            </template>
+            <template v-slot:unassign-button-content>
+                <?= Icon::widget()->name('chevron-left');?>
+            </template>
+        </ui-dual-treeview>
     </div>
 </div>
