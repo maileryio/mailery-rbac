@@ -25,6 +25,7 @@
         "maileryio/widget-dataview": "dev-master",
         "maileryio/widget-link": "dev-master",
         "maileryio/widget-form": "dev-master",
+        "yiisoft/rbac": "^3.0@dev",
         "yiisoft/router": "^3.0@dev"
     },
     "require-dev": {
