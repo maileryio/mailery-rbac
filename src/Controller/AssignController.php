@@ -45,6 +45,8 @@ class AssignController extends Controller
             ->createResponse()
             ->withHeader('Content-Type', 'application/json');
 
+        $response->getBody()->write('[{"text": "Item 1"}]');
+
         return $response;
     }
 
