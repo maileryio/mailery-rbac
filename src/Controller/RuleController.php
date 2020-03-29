@@ -13,6 +13,7 @@ use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Rbac\Rule;
 use Yiisoft\View\WebView;
 
 class RuleController extends Controller
@@ -152,6 +153,36 @@ class RuleController extends Controller
         return $this->getResponseFactory()
             ->createResponse(302)
             ->withHeader('Location', $urlGenerator->generate('/rbac/rule/index'));
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    public function suggestions(ServerRequestInterface $request): ResponseInterface
+    {
+        $data = [];
+        $queryParams = $request->getQueryParams();
+
+        if (!empty($queryParams['q'])) {
+            $query = $queryParams['q'];
+            $data = array_map(
+                function (Rule $rule) {
+                    return [
+                        'id' => $rule->getName(),
+                        'text' => $rule->getName(),
+                    ];
+                },
+                array_filter(
+                    $this->rbacManager->getRules(),
+                    function (Rule $rule) use($query) {
+                        return strpos($rule->getName(), $query) !== false;
+                    }
+                )
+            );
+        }
+
+        return $this->asJson(array_values($data));
     }
 
 }

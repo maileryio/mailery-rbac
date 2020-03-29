@@ -4,6 +4,7 @@ namespace Mailery\Rbac\Form;
 
 use Yiisoft\Rbac\Role;
 use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Router\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use FormManager\Form;
@@ -23,11 +24,17 @@ class RoleForm extends Form
     private RbacManager $rbacManager;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private UrlGeneratorInterface $urlGenerator;
+
+    /**
      * @param RbacManager $rbacManager
      */
-    public function __construct(RbacManager $rbacManager)
+    public function __construct(RbacManager $rbacManager, UrlGeneratorInterface $urlGenerator)
     {
         $this->rbacManager = $rbacManager;
+        $this->urlGenerator = $urlGenerator;
         parent::__construct($this->inputs());
     }
 
@@ -86,11 +93,16 @@ class RoleForm extends Form
     {
         $uniqueNameConstraint = new Constraints\Callback([
             'callback' => function ($value, ExecutionContextInterface $context) {
-                $roles = $this->rbacManager->getRoles();
                 $roleName = $this->role !== null ? $this->role->getName() : null;
 
-                if ($value !== $roleName && isset($roles[$value])) {
+                if ($value !== $roleName && $this->rbacManager->getRole($value) !== null) {
                     $context->buildViolation('This role name already exists.')
+                        ->atPath('name')
+                        ->addViolation();
+                }
+
+                if ($this->rbacManager->getPermission($value) !== null) {
+                    $context->buildViolation('This name conflicted with permission.')
                         ->atPath('name')
                         ->addViolation();
                 }
@@ -103,8 +115,7 @@ class RoleForm extends Form
                     return;
                 }
 
-                $roles = $this->rbacManager->getRules();
-                if (!isset($roles[$value])) {
+                if ($this->rbacManager->getRule($value) === null) {
                     $context->buildViolation('This rule name must exist.')
                         ->atPath('ruleName')
                         ->addViolation();
@@ -119,7 +130,8 @@ class RoleForm extends Form
                     'pattern' => '/^[a-zA-Z]+$/i',
                 ]))
                 ->addConstraint($uniqueNameConstraint),
-            'ruleName' => F::text('Rule Name')
+            'ruleName' => (new Inputs\Typeahead('Rule Name'))
+                ->setAttribute('url', $this->urlGenerator->generate('/rbac/rule/suggestions'))
                 ->addConstraint($existRuleConstraint),
             'description' => F::textarea('Description', ['rows' => 5]),
             '' => F::submit($this->role === null ? 'Create' : 'Update'),

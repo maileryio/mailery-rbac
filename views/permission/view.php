@@ -73,3 +73,21 @@ $this->setTitle($permission->getName());
         ?>
     </div>
 </div>
+<div class="mb-2"></div>
+<div class="row">
+    <div class="col-12 grid-margin">
+        <ui-dual-treeview
+            fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
+            fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
+            post-assign-url="<?= $urlGenerator->generate('/rbac/assign', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
+            post-unassign-url="<?= $urlGenerator->generate('/rbac/unassign', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
+        >
+            <template v-slot:assign-button-content>
+                <?= Icon::widget()->name('chevron-right');?>
+            </template>
+            <template v-slot:unassign-button-content>
+                <?= Icon::widget()->name('chevron-left');?>
+            </template>
+        </ui-dual-treeview>
+    </div>
+</div>

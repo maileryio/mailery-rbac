@@ -78,10 +78,10 @@ $this->setTitle($role->getName());
 <div class="row">
     <div class="col-12 grid-margin">
         <ui-dual-treeview
-            fetch-assigned-url="<?= $urlGenerator->generate('/rbac/role/assigned', ['name' => $role->getName()]) ?>"
-            fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/role/unassigned', ['name' => $role->getName()]) ?>"
-            post-assign-url="<?= $urlGenerator->generate('/rbac/role/assign', ['name' => $role->getName()]) ?>"
-            post-unassign-url="<?= $urlGenerator->generate('/rbac/role/unassign', ['name' => $role->getName()]) ?>"
+            fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $role->getName(), 'type' => $role->getType()]) ?>"
+            fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $role->getName(), 'type' => $role->getType()]) ?>"
+            post-assign-url="<?= $urlGenerator->generate('/rbac/assign', ['name' => $role->getName(), 'type' => $role->getType()]) ?>"
+            post-unassign-url="<?= $urlGenerator->generate('/rbac/unassign', ['name' => $role->getName(), 'type' => $role->getType()]) ?>"
         >
             <template v-slot:assign-button-content>
                 <?= Icon::widget()->name('chevron-right');?>

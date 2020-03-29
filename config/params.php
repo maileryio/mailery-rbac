@@ -49,7 +49,7 @@ return [
 
     'router' => [
         'routes' => [
-            // permissions
+            // Permissions:
             '/rbac/permission/index' => Route::get('/rbac/permission/index', [PermissionController::class, 'index'])
                 ->name('/rbac/permission/index'),
             '/rbac/permission/view' => Route::get('/rbac/permission/view/{name:\w+}', [PermissionController::class, 'view'])
@@ -61,7 +61,7 @@ return [
             '/rbac/permission/create' => Route::methods(['GET', 'POST'], '/rbac/permission/create', [PermissionController::class, 'create'])
                 ->name('/rbac/permission/create'),
 
-            // roles
+            // Roles:
             '/rbac/role/index' => Route::get('/rbac/role/index', [RoleController::class, 'index'])
                 ->name('/rbac/role/index'),
             '/rbac/role/view' => Route::get('/rbac/role/view/{name:\w+}', [RoleController::class, 'view'])
@@ -72,16 +72,8 @@ return [
                 ->name('/rbac/role/delete'),
             '/rbac/role/create' => Route::methods(['GET', 'POST'], '/rbac/role/create', [RoleController::class, 'create'])
                 ->name('/rbac/role/create'),
-            '/rbac/role/assign' => Route::post('/rbac/role/assign', [AssignController::class, 'assign'])
-                ->name('/rbac/role/assign'),
-            '/rbac/role/unassign' => Route::post('/rbac/role/unassign', [AssignController::class, 'unassign'])
-                ->name('/rbac/role/unassign'),
-            '/rbac/role/assigned' => Route::get('/rbac/role/assigned', [AssignController::class, 'assigned'])
-                ->name('/rbac/role/assigned'),
-            '/rbac/role/unassigned' => Route::get('/rbac/role/unassigned', [AssignController::class, 'unassigned'])
-                ->name('/rbac/role/unassigned'),
 
-            // rules
+            // Rules:
             '/rbac/rule/index' => Route::get('/rbac/rule/index', [RuleController::class, 'index'])
                 ->name('/rbac/rule/index'),
             '/rbac/rule/view' => Route::get('/rbac/rule/view/{name:\w+}', [RuleController::class, 'view'])
@@ -92,6 +84,19 @@ return [
                 ->name('/rbac/rule/delete'),
             '/rbac/rule/create' => Route::methods(['GET', 'POST'], '/rbac/rule/create', [RuleController::class, 'create'])
                 ->name('/rbac/rule/create'),
+
+            '/rbac/rule/suggestions' => Route::get('/rbac/rule/suggestions', [RuleController::class, 'suggestions'])
+                ->name('/rbac/rule/suggestions'),
+
+            // Assign:
+            '/rbac/assign' => Route::post('/rbac/assign', [AssignController::class, 'assign'])
+                ->name('/rbac/assign'),
+            '/rbac/unassign' => Route::post('/rbac/unassign', [AssignController::class, 'unassign'])
+                ->name('/rbac/unassign'),
+            '/rbac/assigned' => Route::get('/rbac/assigned', [AssignController::class, 'assigned'])
+                ->name('/rbac/assigned'),
+            '/rbac/unassigned' => Route::get('/rbac/unassigned', [AssignController::class, 'unassigned'])
+                ->name('/rbac/unassigned'),
         ],
     ],
 ];
