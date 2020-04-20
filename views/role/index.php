@@ -3,7 +3,6 @@
 use Mailery\Widget\Dataview\GridView;
 use Mailery\Widget\Dataview\Columns\ActionColumn;
 use Mailery\Widget\Dataview\Columns\DataColumn;
-use Mailery\Widget\Dataview\Columns\SerialColumn;
 use Mailery\Widget\Dataview\GridView\LinkPager;
 use Mailery\Widget\Link\Link;
 use Mailery\Icon\Icon;
@@ -16,12 +15,12 @@ use Yiisoft\Html\Html;
 /** @var Yiisoft\Data\Reader\DataReaderInterface $dataReader*/
 /** @var Yiisoft\Data\Paginator\PaginatorInterface $paginator */
 
-$this->setTitle('All Roles');
+$this->setTitle('User roles');
 
 ?><div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2">All Roles</h1>
+            <h1 class="h2">User roles</h1>
             <div class="btn-toolbar float-right">
                 <form class="form-inline float-left">
                     <div class="input-group mx-sm-1 mb-2">
@@ -38,7 +37,7 @@ $this->setTitle('All Roles');
                 </button>
                 <a class="btn btn-sm btn-primary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/role/create') ?>">
                     <?= Icon::widget()->name('plus')->options(['class' => 'mr-1']); ?>
-                    New Role
+                    Add new role
                 </a>
             </div>
         </div>
@@ -60,18 +59,25 @@ $this->setTitle('All Roles');
                 'class' => 'text-center text-muted mt-4 mb-4',
             ])
             ->columns([
-                (new SerialColumn())
-                    ->header('#')
-                    ->paginator($paginator),
                 (new DataColumn())
                     ->header('Name')
-                    ->content(function (Role $data, int $index) {
-                        return $data->getName();
+                    ->content(function (Role $data, int $index) use($urlGenerator) {
+                        return Html::a(
+                            $data->getName(),
+                            $urlGenerator->generate('/rbac/role/view', ['name' => $data->getName()])
+                        );
                     }),
                 (new DataColumn())
                     ->header('Rule')
-                    ->content(function (Role $data, int $index) {
-                        return $data->getRuleName();
+                    ->content(function (Role $data, int $index) use($urlGenerator) {
+                        if (empty($data->getRuleName())) {
+                            return $data->getRuleName();
+                        }
+
+                        return Html::a(
+                            $data->getRuleName(),
+                            $urlGenerator->generate('/rbac/rule/view', ['name' => $data->getRuleName()])
+                        );
                     }),
                 (new DataColumn())
                     ->header('Description')
@@ -79,19 +85,11 @@ $this->setTitle('All Roles');
                         return $data->getDescription();
                     }),
                 (new ActionColumn())
-                    ->header('Actions')
                     ->contentOptions([
-                        'style' => 'width: 120px;',
+                        'style' => 'width: 80px;',
                     ])
-                    ->view(function (Role $data, int $index) use($urlGenerator) {
-                        return Html::a(
-                            Icon::widget()->name('eye'),
-                            $urlGenerator->generate('/rbac/role/view', ['name' => $data->getName()]),
-                            [
-                                'class' => 'text-decoration-none mr-3',
-                            ]
-                        );
-                    })
+                    ->header('Edit')
+                    ->view('')
                     ->update(function (Role $data, int $index) use($urlGenerator) {
                         return Html::a(
                             Icon::widget()->name('pencil'),
@@ -101,6 +99,14 @@ $this->setTitle('All Roles');
                             ]
                         );
                     })
+                    ->delete(''),
+                (new ActionColumn())
+                    ->contentOptions([
+                        'style' => 'width: 80px;',
+                    ])
+                    ->header('Delete')
+                    ->view('')
+                    ->update('')
                     ->delete(function (Role $data, int $index) use($urlGenerator) {
                         return Link::widget()
                             ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1']))

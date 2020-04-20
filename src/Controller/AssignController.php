@@ -3,9 +3,9 @@
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Controller;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Rbac\Item;
 use Yiisoft\Rbac\ManagerInterface as RbacManager;
@@ -31,10 +31,10 @@ class AssignController extends Controller
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @param Request $request
+     * @return Response
      */
-    public function assigned(ServerRequestInterface $request): ResponseInterface
+    public function assigned(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->getResponseFactory()
@@ -45,10 +45,10 @@ class AssignController extends Controller
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @param Request $request
+     * @return Response
      */
-    public function unassigned(ServerRequestInterface $request): ResponseInterface
+    public function unassigned(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->getResponseFactory()
@@ -59,10 +59,10 @@ class AssignController extends Controller
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @param Request $request
+     * @return Response
      */
-    public function assign(ServerRequestInterface $request): ResponseInterface
+    public function assign(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->getResponseFactory()
@@ -92,10 +92,10 @@ class AssignController extends Controller
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @param Request $request
+     * @return Response
      */
-    public function unassign(ServerRequestInterface $request): ResponseInterface
+    public function unassign(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->getResponseFactory()
@@ -144,10 +144,10 @@ class AssignController extends Controller
     }
 
     /**
-     * @param ServerRequestInterface $request
+     * @param Request $request
      * @return Item|null
      */
-    private function getCurrentItem(ServerRequestInterface $request): ?Item
+    private function getCurrentItem(Request $request): ?Item
     {
         [
             'name' => $name,
