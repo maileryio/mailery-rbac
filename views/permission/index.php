@@ -1,20 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
-use Mailery\Widget\Dataview\GridView;
+use Mailery\Icon\Icon;
 use Mailery\Widget\Dataview\Columns\ActionColumn;
 use Mailery\Widget\Dataview\Columns\DataColumn;
+use Mailery\Widget\Dataview\GridView;
 use Mailery\Widget\Dataview\GridView\LinkPager;
 use Mailery\Widget\Link\Link;
-use Mailery\Icon\Icon;
-use Yiisoft\Rbac\Permission;
 use Yiisoft\Html\Html;
+use Yiisoft\Rbac\Permission;
 
 /** @var Mailery\Web\View\WebView $this */
 /** @var Yiisoft\Aliases\Aliases $aliases */
 /** @var Yiisoft\Router\UrlGeneratorInterface $urlGenerator */
 /** @var Yiisoft\Data\Reader\DataReaderInterface $dataReader*/
 /** @var Yiisoft\Data\Paginator\PaginatorInterface $paginator */
-
 $this->setTitle('Access permissions');
 
 ?><div class="row">
@@ -35,7 +34,7 @@ $this->setTitle('Access permissions');
                 <button class="btn btn-sm btn-secondary dropdown-toggle mb-2">
                     <?= Icon::widget()->name('settings'); ?>
                 </button>
-                <a class="btn btn-sm btn-primary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/create') ?>">
+                <a class="btn btn-sm btn-primary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/create'); ?>">
                     <?= Icon::widget()->name('plus')->options(['class' => 'mr-1']); ?>
                     Add new permission
                 </a>
@@ -61,7 +60,7 @@ $this->setTitle('Access permissions');
             ->columns([
                 (new DataColumn())
                     ->header('Name')
-                    ->content(function (Permission $data, int $index) use($urlGenerator) {
+                    ->content(function (Permission $data, int $index) use ($urlGenerator) {
                         return Html::a(
                             $data->getName(),
                             $urlGenerator->generate('/rbac/permission/view', ['name' => $data->getName()])
@@ -69,7 +68,7 @@ $this->setTitle('Access permissions');
                     }),
                 (new DataColumn())
                     ->header('Rule')
-                    ->content(function (Permission $data, int $index) use($urlGenerator) {
+                    ->content(function (Permission $data, int $index) use ($urlGenerator) {
                         if (empty($data->getRuleName())) {
                             return $data->getRuleName();
                         }
@@ -90,7 +89,7 @@ $this->setTitle('Access permissions');
                     ])
                     ->header('Edit')
                     ->view('')
-                    ->update(function (Permission $data, int $index) use($urlGenerator) {
+                    ->update(function (Permission $data, int $index) use ($urlGenerator) {
                         return Html::a(
                             Icon::widget()->name('pencil'),
                             $urlGenerator->generate('/rbac/permission/edit', ['name' => $data->getName()]),
@@ -107,7 +106,7 @@ $this->setTitle('Access permissions');
                     ->header('Delete')
                     ->view('')
                     ->update('')
-                    ->delete(function (Permission $data, int $index) use($urlGenerator) {
+                    ->delete(function (Permission $data, int $index) use ($urlGenerator) {
                         return Link::widget()
                             ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1']))
                             ->method('delete')
@@ -122,31 +121,29 @@ $this->setTitle('Access permissions');
     </div>
 </div><?php
 if ($paginator->getTotalCount() > 0) {
-    ?><div class="mb-4"></div>
+            ?><div class="mb-4"></div>
     <div class="row">
         <div class="col-6">
             <?= GridView\OffsetSummary::widget()
-                ->paginator($paginator);
-            ?>
+                ->paginator($paginator); ?>
         </div>
         <div class="col-6">
             <?= LinkPager::widget()
                 ->paginator($paginator)
                 ->options([
-                    'class' => 'float-right'
+                    'class' => 'float-right',
                 ])
                 ->prevPageLabel('Previous')
                 ->nextPageLabel('Next')
-                ->urlGenerator(function (int $page) use($urlGenerator) {
+                ->urlGenerator(function (int $page) use ($urlGenerator) {
                     $url = $urlGenerator->generate('/rbac/permission/index');
                     if ($page > 1) {
                         $url = $url . '?page=' . $page;
                     }
 
                     return $url;
-                });
-            ?>
+                }); ?>
         </div>
     </div><?php
-}
+        }
 ?>

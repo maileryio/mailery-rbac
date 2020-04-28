@@ -1,18 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * Rbac module for Mailery Platform
+ * @link      https://github.com/maileryio/mailery-rbac
+ * @package   Mailery\Rbac
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
+ */
+
 namespace Mailery\Rbac\Form;
 
-use Yiisoft\Rbac\Permission;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
-use Yiisoft\Router\UrlGeneratorInterface;
+use FormManager\Factory as F;
+use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use FormManager\Form;
-use FormManager\Factory as F;
+use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Rbac\Permission;
+use Yiisoft\Router\UrlGeneratorInterface;
 
 class PermissionForm extends Form
 {
-
     /**
      * @var Permission
      */
@@ -107,7 +116,7 @@ class PermissionForm extends Form
                         ->atPath('name')
                         ->addViolation();
                 }
-            }
+            },
         ]);
 
         $existRuleConstraint = new Constraints\Callback([
@@ -121,7 +130,7 @@ class PermissionForm extends Form
                         ->atPath('ruleName')
                         ->addViolation();
                 }
-            }
+            },
         ]);
 
         return [
@@ -138,5 +147,4 @@ class PermissionForm extends Form
             '' => F::submit($this->role === null ? 'Create' : 'Update'),
         ];
     }
-
 }

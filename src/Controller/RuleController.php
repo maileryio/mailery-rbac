@@ -1,24 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * Rbac module for Mailery Platform
+ * @link      https://github.com/maileryio/mailery-rbac
+ * @package   Mailery\Rbac
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
+ */
+
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Controller;
 use Mailery\Rbac\Form\RuleForm;
 use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
-use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Rbac\ManagerInterface as RbacManager;
 use Yiisoft\Rbac\Rule;
+use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\View\WebView;
 
 class RuleController extends Controller
 {
-
     /**
      * @var RbacManager
      */
@@ -175,7 +184,7 @@ class RuleController extends Controller
                 },
                 array_filter(
                     $this->rbacManager->getRules(),
-                    function (Rule $rule) use($query) {
+                    function (Rule $rule) use ($query) {
                         return strpos($rule->getName(), $query) !== false;
                     }
                 )
@@ -184,5 +193,4 @@ class RuleController extends Controller
 
         return $this->asJson(array_values($data));
     }
-
 }

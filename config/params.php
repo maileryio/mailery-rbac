@@ -1,15 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * Rbac module for Mailery Platform
+ * @link      https://github.com/maileryio/mailery-rbac
+ * @package   Mailery\Rbac
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
+ */
+
 use Mailery\Menu\MenuItem;
+use Mailery\Rbac\Assets\RbacAssetBundle;
 use Mailery\Rbac\Controller\AssignController;
+use Mailery\Rbac\Controller\PermissionController;
 use Mailery\Rbac\Controller\RoleController;
 use Mailery\Rbac\Controller\RuleController;
-use Mailery\Rbac\Controller\PermissionController;
+use Mailery\Web\Assets\AppAssetBundle;
+use Opis\Closure\SerializableClosure;
 use Yiisoft\Router\Route;
 use Yiisoft\Router\UrlGeneratorInterface;
-use Opis\Closure\SerializableClosure;
-use Mailery\Web\Assets\AppAssetBundle;
-use Mailery\Rbac\Assets\RbacAssetBundle;
 
 return [
     'rbacNavbarMenuItem' => (new MenuItem())

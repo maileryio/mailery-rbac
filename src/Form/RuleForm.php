@@ -1,17 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * Rbac module for Mailery Platform
+ * @link      https://github.com/maileryio/mailery-rbac
+ * @package   Mailery\Rbac
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
+ */
+
 namespace Mailery\Rbac\Form;
 
-use Yiisoft\Rbac\Rule;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use FormManager\Factory as F;
+use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use FormManager\Form;
-use FormManager\Factory as F;
+use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Rbac\Rule;
 
 class RuleForm extends Form
 {
-
     /**
      * @var Rule
      */
@@ -81,15 +90,17 @@ class RuleForm extends Form
                         ->atPath('name')
                         ->addViolation();
                 }
-            }
+            },
         ]);
 
         $classExistsConstraint = new Constraints\Callback([
             'callback' => function ($value, ExecutionContextInterface $context) {
                 if (!class_exists($value)) {
                     $message = "Unknown class '{$value}'.";
-                } else if (!is_subclass_of($value, Rule::class)) {
-                    $message = "'{$value}' must extend from 'Yiisoft\\Rbac\\Rule' or its child class.";
+                } else {
+                    if (!is_subclass_of($value, Rule::class)) {
+                        $message = "'{$value}' must extend from 'Yiisoft\\Rbac\\Rule' or its child class.";
+                    }
                 }
 
                 if (!empty($message)) {
@@ -97,7 +108,7 @@ class RuleForm extends Form
                         ->atPath('className')
                         ->addViolation();
                 }
-            }
+            },
         ]);
 
         return [
@@ -116,5 +127,4 @@ class RuleForm extends Form
             '' => F::submit('Create'),
         ];
     }
-
 }

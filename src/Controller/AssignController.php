@@ -1,10 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * Rbac module for Mailery Platform
+ * @link      https://github.com/maileryio/mailery-rbac
+ * @package   Mailery\Rbac
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
+ */
+
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Controller;
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Rbac\Item;
@@ -193,8 +203,10 @@ class AssignController extends Controller
             /* @var $children Item */
             if ($item->getType() === Item::TYPE_ROLE) {
                 $roles['children'][] = $children;
-            } else if ($item->getType() === Item::TYPE_PERMISSION) {
-                $permissions['children'][] = $children;
+            } else {
+                if ($item->getType() === Item::TYPE_PERMISSION) {
+                    $permissions['children'][] = $children;
+                }
             }
         }
 
@@ -250,8 +262,10 @@ class AssignController extends Controller
             /* @var $children Item */
             if ($item->getType() === Item::TYPE_ROLE) {
                 $roles['children'][] = $children;
-            } else if ($item->getType() === Item::TYPE_PERMISSION) {
-                $permissions['children'][] = $children;
+            } else {
+                if ($item->getType() === Item::TYPE_PERMISSION) {
+                    $permissions['children'][] = $children;
+                }
             }
         }
 

@@ -1,20 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
-use Mailery\Widget\Dataview\DetailView;
 use Mailery\Icon\Icon;
+use Mailery\Widget\Dataview\DetailView;
 use Mailery\Widget\Link\Link;
 
 /** @var Mailery\Web\View\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Permission $permission */
 /** @var bool $submitted */
-
 $this->setTitle($permission->getName());
 
 ?><div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2">Permission #<?= $permission->getName() ?></h1>
+            <h1 class="h2">Permission #<?= $permission->getName(); ?></h1>
             <div class="btn-toolbar float-right">
                 <?= Link::widget()
                     ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1']) . ' Delete')
@@ -25,12 +24,12 @@ $this->setTitle($permission->getName());
                         'class' => 'btn btn-sm btn-danger mx-sm-1 mb-2',
                     ]);
                 ?>
-                <a class="btn btn-sm btn-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/edit', ['name' => $permission->getName()]) ?>">
+                <a class="btn btn-sm btn-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/edit', ['name' => $permission->getName()]); ?>">
                     <?= Icon::widget()->name('pencil')->options(['class' => 'mr-1']); ?>
                     Update
                 </a>
                 <div class="btn-toolbar float-right">
-                    <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/index') ?>">
+                    <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/index'); ?>">
                         Back
                     </a>
                 </div>
@@ -77,10 +76,10 @@ $this->setTitle($permission->getName());
 <div class="row">
     <div class="col-12 grid-margin">
         <ui-dual-treeview
-            fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
-            fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
-            post-assign-url="<?= $urlGenerator->generate('/rbac/assign', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
-            post-unassign-url="<?= $urlGenerator->generate('/rbac/unassign', ['name' => $permission->getName(), 'type' => $permission->getType()]) ?>"
+            fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
+            fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
+            post-assign-url="<?= $urlGenerator->generate('/rbac/assign', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
+            post-unassign-url="<?= $urlGenerator->generate('/rbac/unassign', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
         >
             <template v-slot:assign-button-content>
                 <?= Icon::widget()->name('chevron-right');?>

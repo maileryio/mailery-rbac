@@ -1,23 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * Rbac module for Mailery Platform
+ * @link      https://github.com/maileryio/mailery-rbac
+ * @package   Mailery\Rbac
+ * @license   BSD-3-Clause
+ * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
+ */
+
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Controller;
 use Mailery\Rbac\Form\RoleForm;
 use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
-use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\View\WebView;
 
 class RoleController extends Controller
 {
-
     /**
      * @var RbacManager
      */
@@ -131,7 +140,8 @@ class RoleController extends Controller
             }
         }
 
-        return $this->render('edit', compact('role', 'roleForm', 'submitted'));;
+        return $this->render('edit', compact('role', 'roleForm', 'submitted'));
+        ;
     }
 
     /**
@@ -153,5 +163,4 @@ class RoleController extends Controller
             ->createResponse(303)
             ->withHeader('Location', $urlGenerator->generate('/rbac/role/index'));
     }
-
 }

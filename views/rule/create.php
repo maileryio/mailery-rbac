@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Mailery\Widget\Form\FormRenderer;
 
@@ -6,7 +6,6 @@ use Mailery\Widget\Form\FormRenderer;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var FormManager\Form $ruleForm */
 /** @var bool $submitted */
-
 $this->setTitle('New Rule');
 
 ?><div class="row">
@@ -14,7 +13,7 @@ $this->setTitle('New Rule');
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
             <h1 class="h2">New rule</h1>
             <div class="btn-toolbar float-right">
-                <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/rule/index') ?>">
+                <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/rule/index'); ?>">
                     Back
                 </a>
             </div>
@@ -24,6 +23,6 @@ $this->setTitle('New Rule');
 <div class="mb-2"></div>
 <div class="row">
     <div class="col-6">
-        <?= (new FormRenderer($ruleForm))($submitted) ?>
+        <?= (new FormRenderer($ruleForm))($submitted); ?>
     </div>
 </div>
