@@ -53,7 +53,7 @@ class PermissionController extends Controller
         $queryParams = $request->getQueryParams();
 
         $dataReader = (new IterableDataReader($this->rbacManager->getPermissions()))
-            ->withLimit(1000); // temporary hack
+            ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
@@ -74,14 +74,15 @@ class PermissionController extends Controller
                 'action' => $request->getUri()->getPath(),
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
-            ]);
+            ])
+        ;
 
         $submitted = $request->getMethod() === Method::POST;
 
         if ($submitted) {
             $permissionForm->loadFromServerRequest($request);
 
-            if ($permissionForm->isValid() && ($permission = $permissionForm->save()) !== null) {
+            if (($permission = $permissionForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));
@@ -121,19 +122,20 @@ class PermissionController extends Controller
         }
 
         $permissionForm
+            ->withPermission($permission)
             ->setAttributes([
                 'action' => $request->getUri()->getPath(),
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
             ])
-            ->withPermission($permission);
+        ;
 
         $submitted = $request->getMethod() === Method::POST;
 
         if ($submitted) {
             $permissionForm->loadFromServerRequest($request);
 
-            if ($permissionForm->isValid() && ($permission = $permissionForm->save()) !== null) {
+            if (($permission = $permissionForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));

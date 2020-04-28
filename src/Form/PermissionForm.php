@@ -23,7 +23,7 @@ use Yiisoft\Router\UrlGeneratorInterface;
 class PermissionForm extends Form
 {
     /**
-     * @var Permission
+     * @var Permission|null
      */
     private ?Permission $permission;
 
@@ -65,10 +65,14 @@ class PermissionForm extends Form
     }
 
     /**
-     * @return Permission
+     * @return Permission|null
      */
-    public function save(): Permission
+    public function save(): ?Permission
     {
+        if (!$this->isValid()) {
+            return null;
+        }
+
         $name = $this['name']->getValue();
         $ruleName = $this['ruleName']->getValue();
         $description = $this['description']->getValue();
@@ -140,8 +144,7 @@ class PermissionForm extends Form
                     'pattern' => '/^[a-zA-Z]+$/i',
                 ]))
                 ->addConstraint($uniqueNameConstraint),
-            'ruleName' => (new Inputs\Typeahead('Rule name'))
-                ->setAttribute('url', $this->urlGenerator->generate('/rbac/rule/suggestions'))
+            'ruleName' => (new Inputs\Typeahead('Rule name', ['url' => $this->urlGenerator->generate('/rbac/rule/suggestions')]))
                 ->addConstraint($existRuleConstraint),
             'description' => F::textarea('Description', ['rows' => 5]),
             '' => F::submit($this->role === null ? 'Create' : 'Update'),

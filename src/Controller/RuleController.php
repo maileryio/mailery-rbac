@@ -54,7 +54,7 @@ class RuleController extends Controller
         $queryParams = $request->getQueryParams();
 
         $dataReader = (new IterableDataReader($this->rbacManager->getRules()))
-            ->withLimit(1000); // temporary hack
+            ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
@@ -75,14 +75,15 @@ class RuleController extends Controller
                 'action' => $request->getUri()->getPath(),
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
-            ]);
+            ])
+        ;
 
         $submitted = $request->getMethod() === Method::POST;
 
         if ($submitted) {
             $ruleForm->loadFromServerRequest($request);
 
-            if ($ruleForm->isValid() && ($rule = $ruleForm->save()) !== null) {
+            if (($rule = $ruleForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
@@ -122,19 +123,20 @@ class RuleController extends Controller
         }
 
         $ruleForm
+            ->withRule($rule)
             ->setAttributes([
                 'action' => $request->getUri()->getPath(),
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
             ])
-            ->withRule($rule);
+        ;
 
         $submitted = $request->getMethod() === Method::POST;
 
         if ($submitted) {
             $ruleForm->loadFromServerRequest($request);
 
-            if ($ruleForm->isValid() && ($rule = $ruleForm->save()) !== null) {
+            if (($rule = $ruleForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));

@@ -22,7 +22,7 @@ use Yiisoft\Rbac\Rule;
 class RuleForm extends Form
 {
     /**
-     * @var Rule
+     * @var Rule|null
      */
     private ?Rule $rule;
 
@@ -56,10 +56,14 @@ class RuleForm extends Form
     }
 
     /**
-     * @return Rule
+     * @return Rule|null
      */
-    public function save(): Rule
+    public function save(): ?Rule
     {
+        if (!$this->isValid()) {
+            return null;
+        }
+
         $name = $this['name']->getValue();
         $className = $this['className']->getValue();
 

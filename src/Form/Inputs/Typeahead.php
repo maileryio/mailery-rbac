@@ -26,7 +26,7 @@ class Typeahead extends Input
     ];
 
     /**
-     * @param string $label
+     * @param string|null $label
      * @param iterable $attributes
      */
     public function __construct(string $label = null, iterable $attributes = [])

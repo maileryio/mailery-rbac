@@ -91,7 +91,7 @@ $this->setTitle('Access permissions');
                     ->view('')
                     ->update(function (Permission $data, int $index) use ($urlGenerator) {
                         return Html::a(
-                            Icon::widget()->name('pencil'),
+                            (string) Icon::widget()->name('pencil'),
                             $urlGenerator->generate('/rbac/permission/edit', ['name' => $data->getName()]),
                             [
                                 'class' => 'text-decoration-none mr-3',
@@ -108,7 +108,7 @@ $this->setTitle('Access permissions');
                     ->update('')
                     ->delete(function (Permission $data, int $index) use ($urlGenerator) {
                         return Link::widget()
-                            ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1']))
+                            ->label((string) Icon::widget()->name('delete')->options(['class' => 'mr-1']))
                             ->method('delete')
                             ->href($urlGenerator->generate('/rbac/permission/delete', ['name' => $data->getName()]))
                             ->confirm('Are you sure?')

@@ -21,7 +21,7 @@ use Yiisoft\Rbac\RuleFactory\ClassNameRuleFactory;
 class ManagerFactory
 {
     /**
-     * @var type
+     * @var array
      */
     private $config;
 

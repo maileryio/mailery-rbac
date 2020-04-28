@@ -53,7 +53,7 @@ class RoleController extends Controller
         $queryParams = $request->getQueryParams();
 
         $dataReader = (new IterableDataReader($this->rbacManager->getRoles()))
-            ->withLimit(1000); // temporary hack
+            ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
@@ -74,14 +74,15 @@ class RoleController extends Controller
                 'action' => $request->getUri()->getPath(),
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
-            ]);
+            ])
+        ;
 
         $submitted = $request->getMethod() === Method::POST;
 
         if ($submitted) {
             $roleForm->loadFromServerRequest($request);
 
-            if ($roleForm->isValid() && ($role = $roleForm->save()) !== null) {
+            if (($role = $roleForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $role->getName()]));
@@ -121,19 +122,20 @@ class RoleController extends Controller
         }
 
         $roleForm
+            ->withRole($role)
             ->setAttributes([
                 'action' => $request->getUri()->getPath(),
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
             ])
-            ->withRole($role);
+        ;
 
         $submitted = $request->getMethod() === Method::POST;
 
         if ($submitted) {
             $roleForm->loadFromServerRequest($request);
 
-            if ($roleForm->isValid() && ($role = $roleForm->save()) !== null) {
+            if (($role = $roleForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $role->getName()]));
