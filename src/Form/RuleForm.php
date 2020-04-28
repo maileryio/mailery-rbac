@@ -107,7 +107,7 @@ class RuleForm extends Form
                     'pattern' => '/^[a-zA-Z]+$/i',
                 ]))
                 ->addConstraint($uniqueNameConstraint),
-            'className' => F::text('Class Name')
+            'className' => F::text('Class name')
                 ->addConstraint(new Constraints\NotBlank())
                 ->addConstraint(new Constraints\Regex([
                     'pattern' => '/^[a-zA-Z\\\]+$/i',

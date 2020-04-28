@@ -130,7 +130,7 @@ class RoleForm extends Form
                     'pattern' => '/^[a-zA-Z]+$/i',
                 ]))
                 ->addConstraint($uniqueNameConstraint),
-            'ruleName' => (new Inputs\Typeahead('Rule Name'))
+            'ruleName' => (new Inputs\Typeahead('Rule name'))
                 ->setAttribute('url', $this->urlGenerator->generate('/rbac/rule/suggestions'))
                 ->addConstraint($existRuleConstraint),
             'description' => F::textarea('Description', ['rows' => 5]),
