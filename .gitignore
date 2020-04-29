@@ -22,7 +22,7 @@ Thumbs.db
 .config
 .npm
 /node_modules
-/package.lock
+/package-lock.json
 
 # composer internals
 /composer.lock
