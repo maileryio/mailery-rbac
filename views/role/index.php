@@ -91,7 +91,7 @@ $this->setTitle('User roles');
                     ->view('')
                     ->update(function (Role $data, int $index) use ($urlGenerator) {
                         return Html::a(
-                            Icon::widget()->name('pencil'),
+                            (string) Icon::widget()->name('pencil'),
                             $urlGenerator->generate('/rbac/role/edit', ['name' => $data->getName()]),
                             [
                                 'class' => 'text-decoration-none mr-3',
@@ -108,7 +108,7 @@ $this->setTitle('User roles');
                     ->update('')
                     ->delete(function (Role $data, int $index) use ($urlGenerator) {
                         return Link::widget()
-                            ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1']))
+                            ->label((string) Icon::widget()->name('delete')->options(['class' => 'mr-1']))
                             ->method('delete')
                             ->href($urlGenerator->generate('/rbac/role/delete', ['name' => $data->getName()]))
                             ->confirm('Are you sure?')

@@ -16,7 +16,7 @@ $this->setTitle($role->getName());
             <h1 class="h2">Role #<?= $role->getName(); ?></h1>
             <div class="btn-toolbar float-right">
                 <?= Link::widget()
-                    ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1']) . ' Delete')
+                    ->label((string) Icon::widget()->name('delete')->options(['class' => 'mr-1']) . ' Delete')
                     ->method('delete')
                     ->href($urlGenerator->generate('/rbac/role/delete', ['name' => $role->getName()]))
                     ->confirm('Are you sure?')

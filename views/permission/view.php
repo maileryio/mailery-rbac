@@ -16,7 +16,7 @@ $this->setTitle($permission->getName());
             <h1 class="h2">Permission #<?= $permission->getName(); ?></h1>
             <div class="btn-toolbar float-right">
                 <?= Link::widget()
-                    ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1']) . ' Delete')
+                    ->label((string) Icon::widget()->name('delete')->options(['class' => 'mr-1']) . ' Delete')
                     ->method('delete')
                     ->href($urlGenerator->generate('/rbac/permission/delete', ['name' => $permission->getName()]))
                     ->confirm('Are you sure?')
