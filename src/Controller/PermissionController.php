@@ -135,7 +135,7 @@ class PermissionController extends Controller
         if ($submitted) {
             $permissionForm->loadFromServerRequest($request);
 
-            if (($permission = $permissionForm->save()) !== null) {
+            if ($permissionForm->save() !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));

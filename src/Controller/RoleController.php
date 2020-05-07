@@ -135,7 +135,7 @@ class RoleController extends Controller
         if ($submitted) {
             $roleForm->loadFromServerRequest($request);
 
-            if (($role = $roleForm->save()) !== null) {
+            if ($roleForm->save() !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $role->getName()]));
