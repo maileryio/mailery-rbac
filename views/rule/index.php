@@ -21,16 +21,6 @@ $this->setTitle('Access rules');
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
             <h1 class="h2">Access rules</h1>
             <div class="btn-toolbar float-right">
-                <form class="form-inline float-left">
-                    <div class="input-group mx-sm-1 mb-2">
-                        <input type="text" class="form-control form-control-sm" placeholder="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <?= Icon::widget()->name('search'); ?>
-                            </button>
-                        </div>
-                    </div>
-                </form>
                 <button class="btn btn-sm btn-secondary dropdown-toggle mb-2">
                     <?= Icon::widget()->name('settings'); ?>
                 </button>
