@@ -21,9 +21,6 @@ $this->setTitle('Access permissions');
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
             <h1 class="h2">Access permissions</h1>
             <div class="btn-toolbar float-right">
-                <button class="btn btn-sm btn-secondary dropdown-toggle mb-2">
-                    <?= Icon::widget()->name('settings'); ?>
-                </button>
                 <a class="btn btn-sm btn-primary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/create'); ?>">
                     <?= Icon::widget()->name('plus')->options(['class' => 'mr-1']); ?>
                     Add new permission
