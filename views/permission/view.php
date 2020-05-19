@@ -12,7 +12,7 @@ $this->setTitle($permission->getName());
 
 ?><div class="row">
     <div class="col-12">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
             <h1 class="h2">Permission #<?= $permission->getName(); ?></h1>
             <div class="btn-toolbar float-right">
                 <?= Link::widget()
