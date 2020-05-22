@@ -15,35 +15,14 @@ namespace Mailery\Rbac\Controller;
 use Mailery\Rbac\Controller;
 use Mailery\Rbac\Form\PermissionForm;
 use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Yiisoft\Aliases\Aliases;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
 use Yiisoft\Router\UrlGeneratorInterface;
-use Yiisoft\View\WebView;
 
 class PermissionController extends Controller
 {
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
-
-    /**
-     * @param RbacManager $rbacManager
-     * @param ResponseFactoryInterface $responseFactory
-     * @param Aliases $aliases
-     * @param WebView $view
-     */
-    public function __construct(RbacManager $rbacManager, ResponseFactoryInterface $responseFactory, Aliases $aliases, WebView $view)
-    {
-        $this->rbacManager = $rbacManager;
-        parent::__construct($responseFactory, $aliases, $view);
-    }
-
     /**
      * @param Request $request
      * @return Response
@@ -52,7 +31,7 @@ class PermissionController extends Controller
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->rbacManager->getPermissions()))
+        $dataReader = (new IterableDataReader($this->getRbacManager()->getPermissions()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
@@ -99,7 +78,7 @@ class PermissionController extends Controller
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->rbacManager->getPermission($name)) === null) {
+        if (empty($name) || ($permission = $this->getRbacManager()->getPermission($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -116,7 +95,7 @@ class PermissionController extends Controller
     public function edit(Request $request, PermissionForm $permissionForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->rbacManager->getPermission($name)) === null) {
+        if (empty($name) || ($permission = $this->getRbacManager()->getPermission($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -155,12 +134,12 @@ class PermissionController extends Controller
         $response = $this->getResponseFactory()->createResponse();
 
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->rbacManager->getPermission($name)) === null) {
+        if (empty($name) || ($permission = $this->getRbacManager()->getPermission($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
 
-        $this->rbacManager->remove($permission);
+        $this->getRbacManager()->remove($permission);
 
         return $response
             ->withStatus(303)

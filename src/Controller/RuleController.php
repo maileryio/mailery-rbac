@@ -15,36 +15,15 @@ namespace Mailery\Rbac\Controller;
 use Mailery\Rbac\Controller;
 use Mailery\Rbac\Form\RuleForm;
 use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Yiisoft\Aliases\Aliases;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
 use Yiisoft\Rbac\Rule;
 use Yiisoft\Router\UrlGeneratorInterface;
-use Yiisoft\View\WebView;
 
 class RuleController extends Controller
 {
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
-
-    /**
-     * @param RbacManager $rbacManager
-     * @param ResponseFactoryInterface $responseFactory
-     * @param Aliases $aliases
-     * @param WebView $view
-     */
-    public function __construct(RbacManager $rbacManager, ResponseFactoryInterface $responseFactory, Aliases $aliases, WebView $view)
-    {
-        $this->rbacManager = $rbacManager;
-        parent::__construct($responseFactory, $aliases, $view);
-    }
-
     /**
      * @param Request $request
      * @return Response
@@ -53,7 +32,7 @@ class RuleController extends Controller
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->rbacManager->getRules()))
+        $dataReader = (new IterableDataReader($this->getRbacManager()->getRules()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
@@ -100,7 +79,7 @@ class RuleController extends Controller
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->rbacManager->getRule($name)) === null) {
+        if (empty($name) || ($rule = $this->getRbacManager()->getRule($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -117,7 +96,7 @@ class RuleController extends Controller
     public function edit(Request $request, RuleForm $ruleForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->rbacManager->getRule($name)) === null) {
+        if (empty($name) || ($rule = $this->getRbacManager()->getRule($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -154,12 +133,12 @@ class RuleController extends Controller
     public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->rbacManager->getRule($name)) === null) {
+        if (empty($name) || ($rule = $this->getRbacManager()->getRule($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
 
-        $this->rbacManager->remove($rule);
+        $this->getRbacManager()->remove($rule);
 
         return $this->getResponseFactory()
             ->createResponse(302)
@@ -185,7 +164,7 @@ class RuleController extends Controller
                     ];
                 },
                 array_filter(
-                    $this->rbacManager->getRules(),
+                    $this->getRbacManager()->getRules(),
                     function (Rule $rule) use ($query) {
                         return strpos($rule->getName(), $query) !== false;
                     }

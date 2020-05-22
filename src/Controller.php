@@ -12,22 +12,41 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac;
 
-use Mailery\Web\Controller as WebController;
+use Mailery\Common\Web\Controller as WebController;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\View\WebView;
+use Mailery\Brand\Service\BrandLocator;
+use Cycle\ORM\ORMInterface;
+use Yiisoft\Rbac\ManagerInterface as RbacManager;
 
 abstract class Controller extends WebController
 {
     /**
-     * @param ResponseFactoryInterface $responseFactory
-     * @param Aliases $aliases
-     * @param WebView $view
+     * @var RbacManager
      */
-    public function __construct(ResponseFactoryInterface $responseFactory, Aliases $aliases, WebView $view)
-    {
-        parent::__construct($responseFactory, $aliases, $view);
+    private RbacManager $rbacManager;
 
-        $this->setBaseViewPath(dirname(__DIR__) . '/views');
+    /**
+     * @inheritdoc
+     */
+    public function __construct(
+        RbacManager $rbacManager,
+        BrandLocator $brandLocator,
+        ResponseFactoryInterface $responseFactory,
+        Aliases $aliases,
+        WebView $view,
+        ORMInterface $orm
+    ) {
+        $this->rbacManager = $rbacManager;
+        parent::__construct($brandLocator, $responseFactory, $aliases, $view, $orm);
+    }
+
+    /**
+     * @return RbacManager
+     */
+    protected function getRbacManager(): RbacManager
+    {
+        return $this->rbacManager;
     }
 }

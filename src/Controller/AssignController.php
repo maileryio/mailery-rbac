@@ -13,33 +13,12 @@ declare(strict_types=1);
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Controller;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Yiisoft\Aliases\Aliases;
 use Yiisoft\Rbac\Item;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
-use Yiisoft\View\WebView;
 
 class AssignController extends Controller
 {
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
-
-    /**
-     * @param RbacManager $rbacManager
-     * @param ResponseFactoryInterface $responseFactory
-     * @param Aliases $aliases
-     * @param WebView $view
-     */
-    public function __construct(RbacManager $rbacManager, ResponseFactoryInterface $responseFactory, Aliases $aliases, WebView $view)
-    {
-        $this->rbacManager = $rbacManager;
-        parent::__construct($responseFactory, $aliases, $view);
-    }
-
     /**
      * @param Request $request
      * @return Response
@@ -86,9 +65,9 @@ class AssignController extends Controller
                 continue;
             }
 
-            if ($this->rbacManager->canAddChild($currentItem, $childItem)
-                && !$this->rbacManager->hasChild($currentItem, $childItem)) {
-                $this->rbacManager->addChild($currentItem, $childItem);
+            if ($this->getRbacManager()->canAddChild($currentItem, $childItem)
+                && !$this->getRbacManager()->hasChild($currentItem, $childItem)) {
+                $this->getRbacManager()->addChild($currentItem, $childItem);
             }
         }
 
@@ -119,8 +98,8 @@ class AssignController extends Controller
                 continue;
             }
 
-            if ($this->rbacManager->hasChild($currentItem, $childItem)) {
-                $this->rbacManager->removeChild($currentItem, $childItem);
+            if ($this->getRbacManager()->hasChild($currentItem, $childItem)) {
+                $this->getRbacManager()->removeChild($currentItem, $childItem);
             }
         }
 
@@ -150,7 +129,7 @@ class AssignController extends Controller
             return null;
         }
 
-        return $this->rbacManager->{$methodName}($name);
+        return $this->getRbacManager()->{$methodName}($name);
     }
 
     /**
@@ -189,7 +168,7 @@ class AssignController extends Controller
             'children' => [],
         ];
 
-        $items = $this->rbacManager->getChildren($currentItem->getName());
+        $items = $this->getRbacManager()->getChildren($currentItem->getName());
 
         foreach ($items as $item) {
             $children = [
@@ -242,12 +221,12 @@ class AssignController extends Controller
             'children' => [],
         ];
 
-        $items = $this->rbacManager->getRoles() + $this->rbacManager->getPermissions();
+        $items = $this->getRbacManager()->getRoles() + $this->getRbacManager()->getPermissions();
 
         foreach ($items as $item) {
             if ($currentItem === $item
-                || $this->rbacManager->hasChild($currentItem, $item)
-                || !$this->rbacManager->canAddChild($currentItem, $item)) {
+                || $this->getRbacManager()->hasChild($currentItem, $item)
+                || !$this->getRbacManager()->canAddChild($currentItem, $item)) {
                 continue;
             }
 

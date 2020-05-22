@@ -15,35 +15,14 @@ namespace Mailery\Rbac\Controller;
 use Mailery\Rbac\Controller;
 use Mailery\Rbac\Form\RoleForm;
 use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Yiisoft\Aliases\Aliases;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
 use Yiisoft\Router\UrlGeneratorInterface;
-use Yiisoft\View\WebView;
 
 class RoleController extends Controller
 {
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
-
-    /**
-     * @param RbacManager $rbacManager
-     * @param ResponseFactoryInterface $responseFactory
-     * @param Aliases $aliases
-     * @param WebView $view
-     */
-    public function __construct(RbacManager $rbacManager, ResponseFactoryInterface $responseFactory, Aliases $aliases, WebView $view)
-    {
-        $this->rbacManager = $rbacManager;
-        parent::__construct($responseFactory, $aliases, $view);
-    }
-
     /**
      * @param Request $request
      * @return Response
@@ -52,7 +31,7 @@ class RoleController extends Controller
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->rbacManager->getRoles()))
+        $dataReader = (new IterableDataReader($this->getRbacManager()->getRoles()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
@@ -99,7 +78,7 @@ class RoleController extends Controller
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->rbacManager->getRole($name)) === null) {
+        if (empty($name) || ($role = $this->getRbacManager()->getRole($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -116,7 +95,7 @@ class RoleController extends Controller
     public function edit(Request $request, RoleForm $roleForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->rbacManager->getRole($name)) === null) {
+        if (empty($name) || ($role = $this->getRbacManager()->getRole($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -154,12 +133,12 @@ class RoleController extends Controller
     public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->rbacManager->getRole($name)) === null) {
+        if (empty($name) || ($role = $this->getRbacManager()->getRole($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
 
-        $this->rbacManager->remove($role);
+        $this->getRbacManager()->remove($role);
 
         return $this->getResponseFactory()
             ->createResponse(303)
