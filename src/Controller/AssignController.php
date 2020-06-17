@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac\Controller;
 
-use Mailery\Rbac\Controller;
+use Mailery\Rbac\WebController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Rbac\Item;
 
-class AssignController extends Controller
+class AssignController extends WebController
 {
     /**
      * @param Request $request

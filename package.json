@@ -1,6 +1,6 @@
 {
     "license": "BSD-3-Clause",
     "dependencies": {
-        "@maileryio/mailery-rbac-assets": "git+ssh://git@github.com:maileryio/mailery-rbac-assets.git#master"
+        "@maileryio/mailery-rbac-assets": "git+ssh://git@github.com/maileryio/mailery-rbac-assets.git#master"
     }
 }

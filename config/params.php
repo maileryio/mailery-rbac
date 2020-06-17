@@ -11,12 +11,10 @@ declare(strict_types=1);
  */
 
 use Mailery\Menu\MenuItem;
-use Mailery\Rbac\Assets\RbacAssetBundle;
 use Mailery\Rbac\Controller\AssignController;
 use Mailery\Rbac\Controller\PermissionController;
 use Mailery\Rbac\Controller\RoleController;
 use Mailery\Rbac\Controller\RuleController;
-use Mailery\Web\Assets\AppAssetBundle;
 use Opis\Closure\SerializableClosure;
 use Yiisoft\Router\Route;
 use Yiisoft\Router\UrlGeneratorInterface;
@@ -45,16 +43,6 @@ return [
                     ->withOrder(300),
             ])
             ->withOrder(200),
-
-    'assetManager' => [
-        'bundles' => [
-            AppAssetBundle::class => [
-                'depends' => [
-                    RbacAssetBundle::class,
-                ],
-            ],
-        ],
-    ],
 
     'rbac' => [
         'directory' => '@root/rbac',

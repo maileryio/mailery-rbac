@@ -21,11 +21,13 @@
         "cycle/orm": "^1.2",
         "form-manager/form-manager": "^6.0",
         "foxy/foxy": "^1.0",
+        "maileryio/mailery-common": "^1.0@dev",
         "maileryio/mailery-web": "dev-master",
         "maileryio/widget-dataview": "dev-master",
         "maileryio/widget-form": "dev-master",
         "maileryio/widget-link": "dev-master",
         "yiisoft/rbac": "^3.0@dev",
+        "yiisoft/rbac-php": "^3.0@dev",
         "yiisoft/router": "^3.0@dev"
     },
     "require-dev": {

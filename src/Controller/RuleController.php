@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac\Controller;
 
-use Mailery\Rbac\Controller;
+use Mailery\Rbac\WebController;
 use Mailery\Rbac\Form\RuleForm;
 use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -22,7 +22,7 @@ use Yiisoft\Http\Method;
 use Yiisoft\Rbac\Rule;
 use Yiisoft\Router\UrlGeneratorInterface;
 
-class RuleController extends Controller
+class RuleController extends WebController
 {
     /**
      * @param Request $request
