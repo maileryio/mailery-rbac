@@ -10,15 +10,18 @@ declare(strict_types=1);
  * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
  */
 
-namespace Mailery\Rbac\Manager;
+namespace Mailery\Rbac\Provider;
 
-use Psr\Container\ContainerInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\Rbac\Manager\PhpManager;
+use Yiisoft\Rbac\Manager;
+use Yiisoft\Rbac\Php\Storage;
+use Yiisoft\Rbac\StorageInterface;
+use Yiisoft\Di\Support\ServiceProvider;
 use Yiisoft\Rbac\RuleFactory\ClassNameRuleFactory;
+use Psr\Container\ContainerInterface;
 
-class ManagerFactory
+class RbacProvider extends ServiceProvider
 {
     /**
      * @var array
@@ -35,10 +38,10 @@ class ManagerFactory
 
     /**
      * @param ContainerInterface $container
+     * @return void
      * @throws \RuntimeException
-     * @return PhpManager
      */
-    public function __invoke(ContainerInterface $container)
+    public function register(ContainerInterface $container): void
     {
         $aliases = $container->get(Aliases::class);
 
@@ -47,13 +50,12 @@ class ManagerFactory
             throw new \RuntimeException('Unable to create directory: ' . $directory);
         }
 
-        $rbacManager = new PhpManager(
-            new ClassNameRuleFactory(),
-            $directory
-        );
+        $storage = new Storage($directory);
+        $manager = new Manager($storage, new ClassNameRuleFactory());
 
-        $rbacManager->setDefaultRoles($this->config['defaultRoles']);
+        $manager->setDefaultRoles($this->config['defaultRoles']);
 
-        return $rbacManager;
+        $container->set(Manager::class, $manager);
+        $container->set(StorageInterface::class, $storage);
     }
 }

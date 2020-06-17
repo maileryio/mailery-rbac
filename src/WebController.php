@@ -18,10 +18,11 @@ use Yiisoft\Aliases\Aliases;
 use Yiisoft\View\WebView;
 use Mailery\Brand\Service\BrandLocator;
 use Cycle\ORM\ORMInterface;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
 use Yiisoft\Assets\AssetManager;
 use Mailery\Web\Assets\AppAssetBundle;
 use Mailery\Rbac\Assets\RbacAssetBundle;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
+use Yiisoft\Rbac\Manager as RbacManager;
 
 abstract class WebController extends Controller
 {
@@ -31,11 +32,17 @@ abstract class WebController extends Controller
     private RbacManager $rbacManager;
 
     /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
      * @inheritdoc
      */
     public function __construct(
         AssetManager $assetManager,
         RbacManager $rbacManager,
+        RbacStorage $rbacStorage,
         BrandLocator $brandLocator,
         ResponseFactoryInterface $responseFactory,
         Aliases $aliases,
@@ -46,6 +53,7 @@ abstract class WebController extends Controller
         $bundle->depends[] = RbacAssetBundle::class;
 
         $this->rbacManager = $rbacManager;
+        $this->rbacStorage = $rbacStorage;
         parent::__construct($brandLocator, $responseFactory, $aliases, $view, $orm);
     }
 
@@ -55,5 +63,13 @@ abstract class WebController extends Controller
     protected function getRbacManager(): RbacManager
     {
         return $this->rbacManager;
+    }
+
+    /**
+     * @return RbacStorage
+     */
+    protected function getRbacStorage(): RbacStorage
+    {
+        return $this->rbacStorage;
     }
 }

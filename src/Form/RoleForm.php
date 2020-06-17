@@ -16,7 +16,8 @@ use FormManager\Factory as F;
 use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Rbac\Manager as RbacManager;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Rbac\Role;
 use Yiisoft\Router\UrlGeneratorInterface;
 
@@ -33,6 +34,11 @@ class RoleForm extends Form
     private RbacManager $rbacManager;
 
     /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
      * @var UrlGeneratorInterface
      */
     private UrlGeneratorInterface $urlGenerator;
@@ -41,9 +47,10 @@ class RoleForm extends Form
      * @param RbacManager $rbacManager
      * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(RbacManager $rbacManager, UrlGeneratorInterface $urlGenerator)
+    public function __construct(RbacManager $rbacManager, RbacStorage $rbacStorage, UrlGeneratorInterface $urlGenerator)
     {
         $this->rbacManager = $rbacManager;
+        $this->rbacStorage = $rbacStorage;
         $this->urlGenerator = $urlGenerator;
         parent::__construct($this->inputs());
     }
@@ -92,9 +99,9 @@ class RoleForm extends Form
             ->withUpdatedAt($timestamp);
 
         if ($this->role === null) {
-            $this->rbacManager->add($role);
+            $this->rbacManager->addRole($role);
         } else {
-            $this->rbacManager->update($this->role->getName(), $role);
+            $this->rbacManager->updateRole($this->role->getName(), $role);
         }
 
         return $role;
@@ -109,13 +116,13 @@ class RoleForm extends Form
             'callback' => function ($value, ExecutionContextInterface $context) {
                 $roleName = $this->role !== null ? $this->role->getName() : null;
 
-                if ($value !== $roleName && $this->rbacManager->getRole($value) !== null) {
+                if ($value !== $roleName && $this->rbacStorage->getRoleByName($value) !== null) {
                     $context->buildViolation('This role name already exists.')
                         ->atPath('name')
                         ->addViolation();
                 }
 
-                if ($this->rbacManager->getPermission($value) !== null) {
+                if ($this->rbacStorage->getPermissionByName($value) !== null) {
                     $context->buildViolation('This name conflicted with permission.')
                         ->atPath('name')
                         ->addViolation();
@@ -129,7 +136,7 @@ class RoleForm extends Form
                     return;
                 }
 
-                if ($this->rbacManager->getRule($value) === null) {
+                if ($this->rbacStorage->getRuleByName($value) === null) {
                     $context->buildViolation('This rule name must exist.')
                         ->atPath('ruleName')
                         ->addViolation();

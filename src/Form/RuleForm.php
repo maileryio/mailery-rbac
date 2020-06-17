@@ -16,7 +16,8 @@ use FormManager\Factory as F;
 use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Rbac\Manager as RbacManager;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Rbac\Rule;
 
 class RuleForm extends Form
@@ -32,11 +33,17 @@ class RuleForm extends Form
     private RbacManager $rbacManager;
 
     /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
      * @param RbacManager $rbacManager
      */
-    public function __construct(RbacManager $rbacManager)
+    public function __construct(RbacManager $rbacManager, RbacStorage $rbacStorage)
     {
         $this->rbacManager = $rbacManager;
+        $this->rbacStorage = $rbacStorage;
         parent::__construct($this->inputs());
     }
 
@@ -71,9 +78,9 @@ class RuleForm extends Form
             ->withName($name);
 
         if ($this->rule === null) {
-            $this->rbacManager->add($rule);
+            $this->rbacManager->addRule($rule);
         } else {
-            $this->rbacManager->update($this->rule->getName(), $rule);
+            $this->rbacManager->updateRule($this->rule->getName(), $rule);
         }
 
         return $rule;
@@ -86,7 +93,7 @@ class RuleForm extends Form
     {
         $uniqueNameConstraint = new Constraints\Callback([
             'callback' => function ($value, ExecutionContextInterface $context) {
-                $rules = $this->rbacManager->getRules();
+                $rules = $this->rbacStorage->getRules();
                 $ruleName = $this->rule !== null ? $this->rule->getName() : null;
 
                 if ($value !== $ruleName && isset($rules[$value])) {

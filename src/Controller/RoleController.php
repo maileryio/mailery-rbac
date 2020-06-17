@@ -31,7 +31,7 @@ class RoleController extends WebController
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->getRbacManager()->getRoles()))
+        $dataReader = (new IterableDataReader($this->getRbacStorage()->getRoles()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
@@ -78,7 +78,7 @@ class RoleController extends WebController
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->getRbacManager()->getRole($name)) === null) {
+        if (empty($name) || ($role = $this->getRbacStorage()->getRoleByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -95,7 +95,7 @@ class RoleController extends WebController
     public function edit(Request $request, RoleForm $roleForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->getRbacManager()->getRole($name)) === null) {
+        if (empty($name) || ($role = $this->getRbacStorage()->getRoleByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -114,10 +114,10 @@ class RoleController extends WebController
         if ($submitted) {
             $roleForm->loadFromServerRequest($request);
 
-            if ($roleForm->save() !== null) {
+            if (($newRole = $roleForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
-                    ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $role->getName()]));
+                    ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $newRole->getName()]));
             }
         }
 
@@ -133,12 +133,12 @@ class RoleController extends WebController
     public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->getRbacManager()->getRole($name)) === null) {
+        if (empty($name) || ($role = $this->getRbacStorage()->getRoleByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
 
-        $this->getRbacManager()->remove($role);
+        $this->getRbacStorage()->removeItem($role);
 
         return $this->getResponseFactory()
             ->createResponse(303)

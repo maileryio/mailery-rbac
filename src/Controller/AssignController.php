@@ -120,8 +120,8 @@ class AssignController extends WebController
     private function getItem(string $name, string $type): ?Item
     {
         $methodMap = [
-            Item::TYPE_ROLE => 'getRole',
-            Item::TYPE_PERMISSION => 'getPermission',
+            Item::TYPE_ROLE => 'getRoleByName',
+            Item::TYPE_PERMISSION => 'getPermissionByName',
         ];
 
         $methodName = $methodMap[$type] ?? null;
@@ -129,7 +129,7 @@ class AssignController extends WebController
             return null;
         }
 
-        return $this->getRbacManager()->{$methodName}($name);
+        return $this->getRbacStorage()->{$methodName}($name);
     }
 
     /**
@@ -168,7 +168,7 @@ class AssignController extends WebController
             'children' => [],
         ];
 
-        $items = $this->getRbacManager()->getChildren($currentItem->getName());
+        $items = $this->getRbacStorage()->getChildrenByName($currentItem->getName());
 
         foreach ($items as $item) {
             $children = [
@@ -221,7 +221,7 @@ class AssignController extends WebController
             'children' => [],
         ];
 
-        $items = $this->getRbacManager()->getRoles() + $this->getRbacManager()->getPermissions();
+        $items = $this->getRbacStorage()->getRoles() + $this->getRbacStorage()->getPermissions();
 
         foreach ($items as $item) {
             if ($currentItem === $item

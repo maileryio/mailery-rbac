@@ -16,7 +16,8 @@ use FormManager\Factory as F;
 use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Yiisoft\Rbac\ManagerInterface as RbacManager;
+use Yiisoft\Rbac\Manager as RbacManager;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Rbac\Permission;
 use Yiisoft\Router\UrlGeneratorInterface;
 
@@ -33,17 +34,24 @@ class PermissionForm extends Form
     private RbacManager $rbacManager;
 
     /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
      * @var UrlGeneratorInterface
      */
     private UrlGeneratorInterface $urlGenerator;
 
     /**
      * @param RbacManager $rbacManager
+     * @param RbacStorage $rbacStorage
      * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(RbacManager $rbacManager, UrlGeneratorInterface $urlGenerator)
+    public function __construct(RbacManager $rbacManager, RbacStorage $rbacStorage, UrlGeneratorInterface $urlGenerator)
     {
         $this->rbacManager = $rbacManager;
+        $this->rbacStorage = $rbacStorage;
         $this->urlGenerator = $urlGenerator;
         parent::__construct($this->inputs());
     }
@@ -92,9 +100,9 @@ class PermissionForm extends Form
             ->withUpdatedAt($timestamp);
 
         if ($this->permission === null) {
-            $this->rbacManager->add($permission);
+            $this->rbacManager->addPermission($permission);
         } else {
-            $this->rbacManager->update($this->permission->getName(), $permission);
+            $this->rbacManager->updatePermission($this->permission->getName(), $permission);
         }
 
         return $permission;
@@ -109,13 +117,13 @@ class PermissionForm extends Form
             'callback' => function ($value, ExecutionContextInterface $context) {
                 $permissionName = $this->permission !== null ? $this->permission->getName() : null;
 
-                if ($value !== $permissionName && $this->rbacManager->getPermission($value) !== null) {
+                if ($value !== $permissionName && $this->rbacStorage->getPermissionByName($value) !== null) {
                     $context->buildViolation('This permission name already exists.')
                         ->atPath('name')
                         ->addViolation();
                 }
 
-                if ($this->rbacManager->getRole($value) !== null) {
+                if ($this->rbacStorage->getRoleByName($value) !== null) {
                     $context->buildViolation('This name conflicted with role.')
                         ->atPath('name')
                         ->addViolation();
@@ -129,7 +137,7 @@ class PermissionForm extends Form
                     return;
                 }
 
-                if ($this->rbacManager->getRule($value) === null) {
+                if ($this->rbacStorage->getRuleByName($value) === null) {
                     $context->buildViolation('This rule name must exist.')
                         ->atPath('ruleName')
                         ->addViolation();

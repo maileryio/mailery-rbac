@@ -31,7 +31,7 @@ class PermissionController extends WebController
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->getRbacManager()->getPermissions()))
+        $dataReader = (new IterableDataReader($this->getRbacStorage()->getPermissions()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
@@ -78,7 +78,7 @@ class PermissionController extends WebController
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->getRbacManager()->getPermission($name)) === null) {
+        if (empty($name) || ($permission = $this->getRbacStorage()->getPermissionByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -95,7 +95,7 @@ class PermissionController extends WebController
     public function edit(Request $request, PermissionForm $permissionForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->getRbacManager()->getPermission($name)) === null) {
+        if (empty($name) || ($permission = $this->getRbacStorage()->getPermissionByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -114,10 +114,10 @@ class PermissionController extends WebController
         if ($submitted) {
             $permissionForm->loadFromServerRequest($request);
 
-            if ($permissionForm->save() !== null) {
+            if (($newPermission = $permissionForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
-                    ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));
+                    ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $newPermission->getName()]));
             }
         }
 
@@ -134,12 +134,12 @@ class PermissionController extends WebController
         $response = $this->getResponseFactory()->createResponse();
 
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->getRbacManager()->getPermission($name)) === null) {
+        if (empty($name) || ($permission = $this->getRbacStorage()->getPermissionByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
 
-        $this->getRbacManager()->remove($permission);
+        $this->getRbacStorage()->removeItem($permission);
 
         return $response
             ->withStatus(303)

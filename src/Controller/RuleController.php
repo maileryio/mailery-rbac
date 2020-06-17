@@ -32,7 +32,7 @@ class RuleController extends WebController
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->getRbacManager()->getRules()))
+        $dataReader = (new IterableDataReader($this->getRbacStorage()->getRules()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
@@ -79,7 +79,7 @@ class RuleController extends WebController
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->getRbacManager()->getRule($name)) === null) {
+        if (empty($name) || ($rule = $this->getRbacStorage()->getRuleByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -96,7 +96,7 @@ class RuleController extends WebController
     public function edit(Request $request, RuleForm $ruleForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->getRbacManager()->getRule($name)) === null) {
+        if (empty($name) || ($rule = $this->getRbacStorage()->getRuleByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
@@ -115,10 +115,10 @@ class RuleController extends WebController
         if ($submitted) {
             $ruleForm->loadFromServerRequest($request);
 
-            if (($rule = $ruleForm->save()) !== null) {
+            if (($newRule = $ruleForm->save()) !== null) {
                 return $this->getResponseFactory()
                     ->createResponse(302)
-                    ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
+                    ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $newRule->getName()]));
             }
         }
 
@@ -133,12 +133,12 @@ class RuleController extends WebController
     public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->getRbacManager()->getRule($name)) === null) {
+        if (empty($name) || ($rule = $this->getRbacStorage()->getRuleByName($name)) === null) {
             return $this->getResponseFactory()
                 ->createResponse(404);
         }
 
-        $this->getRbacManager()->remove($rule);
+        $this->getRbacStorage()->removeRule($rule->getName());
 
         return $this->getResponseFactory()
             ->createResponse(302)
@@ -164,7 +164,7 @@ class RuleController extends WebController
                     ];
                 },
                 array_filter(
-                    $this->getRbacManager()->getRules(),
+                    $this->getRbacStorage()->getRules(),
                     function (Rule $rule) use ($query) {
                         return strpos($rule->getName(), $query) !== false;
                     }
