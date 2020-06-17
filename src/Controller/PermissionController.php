@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac\Controller;
 
-use Mailery\Rbac\WebController;
 use Mailery\Rbac\Form\PermissionForm;
+use Mailery\Rbac\WebController;
 use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

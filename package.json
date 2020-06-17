@@ -1,6 +1,18 @@
 {
     "license": "BSD-3-Clause",
     "dependencies": {
+        "@composer-asset/maileryio--cycle-mapper": "file:./vendor/foxy/composer-asset/maileryio/cycle-mapper",
+        "@composer-asset/maileryio--mailery-activity-log": "file:./vendor/foxy/composer-asset/maileryio/mailery-activity-log",
+        "@composer-asset/maileryio--mailery-brand": "file:./vendor/foxy/composer-asset/maileryio/mailery-brand",
+        "@composer-asset/maileryio--mailery-icon": "file:./vendor/foxy/composer-asset/maileryio/mailery-icon",
+        "@composer-asset/maileryio--mailery-menu": "file:./vendor/foxy/composer-asset/maileryio/mailery-menu",
+        "@composer-asset/maileryio--mailery-menu-navbar": "file:./vendor/foxy/composer-asset/maileryio/mailery-menu-navbar",
+        "@composer-asset/maileryio--mailery-menu-sidebar": "file:./vendor/foxy/composer-asset/maileryio/mailery-menu-sidebar",
+        "@composer-asset/maileryio--mailery-web": "file:./vendor/foxy/composer-asset/maileryio/mailery-web",
+        "@composer-asset/maileryio--widget-dataview": "file:./vendor/foxy/composer-asset/maileryio/widget-dataview",
+        "@composer-asset/maileryio--widget-form": "file:./vendor/foxy/composer-asset/maileryio/widget-form",
+        "@composer-asset/maileryio--widget-link": "file:./vendor/foxy/composer-asset/maileryio/widget-link",
+        "@composer-asset/maileryio--widget-search": "file:./vendor/foxy/composer-asset/maileryio/widget-search",
         "@maileryio/mailery-rbac-assets": "git+ssh://git@github.com/maileryio/mailery-rbac-assets.git#master"
     }
 }

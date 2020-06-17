@@ -12,17 +12,17 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac;
 
+use Cycle\ORM\ORMInterface;
+use Mailery\Brand\Service\BrandLocator;
 use Mailery\Common\Web\Controller;
+use Mailery\Rbac\Assets\RbacAssetBundle;
+use Mailery\Web\Assets\AppAssetBundle;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\View\WebView;
-use Mailery\Brand\Service\BrandLocator;
-use Cycle\ORM\ORMInterface;
 use Yiisoft\Assets\AssetManager;
-use Mailery\Web\Assets\AppAssetBundle;
-use Mailery\Rbac\Assets\RbacAssetBundle;
-use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Rbac\Manager as RbacManager;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
+use Yiisoft\View\WebView;
 
 abstract class WebController extends Controller
 {
@@ -37,7 +37,7 @@ abstract class WebController extends Controller
     private RbacStorage $rbacStorage;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct(
         AssetManager $assetManager,

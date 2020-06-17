@@ -17,8 +17,8 @@ use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Yiisoft\Rbac\Manager as RbacManager;
-use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Rbac\Role;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Router\UrlGeneratorInterface;
 
 class RoleForm extends Form
@@ -45,6 +45,7 @@ class RoleForm extends Form
 
     /**
      * @param RbacManager $rbacManager
+     * @param RbacStorage $rbacStorage
      * @param UrlGeneratorInterface $urlGenerator
      */
     public function __construct(RbacManager $rbacManager, RbacStorage $rbacStorage, UrlGeneratorInterface $urlGenerator)
@@ -97,6 +98,10 @@ class RoleForm extends Form
             ->withRuleName(!empty($ruleName) ? $ruleName : null)
             ->withDescription($description)
             ->withUpdatedAt($timestamp);
+
+        if (!$role instanceof Role) {
+            throw new \RuntimeException('Incompatible role type');
+        }
 
         if ($this->role === null) {
             $this->rbacManager->addRole($role);

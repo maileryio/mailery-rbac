@@ -17,8 +17,8 @@ use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Yiisoft\Rbac\Manager as RbacManager;
-use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Rbac\Permission;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Router\UrlGeneratorInterface;
 
 class PermissionForm extends Form
@@ -98,6 +98,10 @@ class PermissionForm extends Form
             ->withRuleName(!empty($ruleName) ? $ruleName : null)
             ->withDescription($description)
             ->withUpdatedAt($timestamp);
+
+        if (!$permission instanceof Permission) {
+            throw new \RuntimeException('Incompatible permission type');
+        }
 
         if ($this->permission === null) {
             $this->rbacManager->addPermission($permission);

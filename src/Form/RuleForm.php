@@ -17,8 +17,8 @@ use FormManager\Form;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Yiisoft\Rbac\Manager as RbacManager;
-use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Rbac\Rule;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 
 class RuleForm extends Form
 {
@@ -39,6 +39,7 @@ class RuleForm extends Form
 
     /**
      * @param RbacManager $rbacManager
+     * @param RbacStorage $rbacStorage
      */
     public function __construct(RbacManager $rbacManager, RbacStorage $rbacStorage)
     {

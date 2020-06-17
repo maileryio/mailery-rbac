@@ -13,13 +13,13 @@ declare(strict_types=1);
 namespace Mailery\Rbac\Provider;
 
 use Yiisoft\Aliases\Aliases;
+use Yiisoft\Di\Container;
+use Yiisoft\Di\Support\ServiceProvider;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Rbac\Manager;
 use Yiisoft\Rbac\Php\Storage;
-use Yiisoft\Rbac\StorageInterface;
-use Yiisoft\Di\Support\ServiceProvider;
 use Yiisoft\Rbac\RuleFactory\ClassNameRuleFactory;
-use Psr\Container\ContainerInterface;
+use Yiisoft\Rbac\StorageInterface;
 
 class RbacProvider extends ServiceProvider
 {
@@ -37,11 +37,11 @@ class RbacProvider extends ServiceProvider
     }
 
     /**
-     * @param ContainerInterface $container
-     * @return void
+     * @param Container $container
      * @throws \RuntimeException
+     * @return void
      */
-    public function register(ContainerInterface $container): void
+    public function register(Container $container): void
     {
         $aliases = $container->get(Aliases::class);
 
