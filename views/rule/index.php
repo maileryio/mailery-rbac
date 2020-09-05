@@ -14,6 +14,8 @@ use Yiisoft\Rbac\Rule;
 /** @var Yiisoft\Router\UrlGeneratorInterface $urlGenerator */
 /** @var Yiisoft\Data\Reader\DataReaderInterface $dataReader*/
 /** @var Yiisoft\Data\Paginator\PaginatorInterface $paginator */
+/** @var string $csrf */
+
 $this->setTitle('Access rules');
 
 ?><div class="row">
@@ -90,7 +92,7 @@ $this->setTitle('Access rules');
         ?>
     </div>
 </div><?php
-if ($paginator->getTotalCount() > 0) {
+if ($paginator->getTotalItems() > 0) {
             ?><div class="mb-4"></div>
     <div class="row">
         <div class="col-6">

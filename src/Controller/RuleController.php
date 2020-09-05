@@ -13,17 +13,61 @@ declare(strict_types=1);
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Form\RuleForm;
-use Mailery\Rbac\WebController;
-use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
+use Yiisoft\Data\Paginator\OffsetPaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
 use Yiisoft\Rbac\Rule;
 use Yiisoft\Router\UrlGeneratorInterface;
+use Mailery\Web\ViewRenderer;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
+use Yiisoft\Yii\Rest\ResponseFactory\JsonResponseFactory;
 
-class RuleController extends WebController
+class RuleController
 {
+    /**
+     * @var ViewRenderer
+     */
+    private ViewRenderer $viewRenderer;
+
+    /**
+     * @var ResponseFactoryInterface
+     */
+    private ResponseFactoryInterface $responseFactory;
+
+    /**
+     * @var JsonResponseFactory
+     */
+    private JsonResponseFactory $jsonResponseFactory;
+
+    /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
+     * @param ViewRenderer $viewRenderer
+     * @param ResponseFactoryInterface $responseFactory
+     * @param JsonResponseFactory $jsonResponseFactory
+     * @param RbacStorage $rbacStorage
+     */
+    public function __construct(
+        ViewRenderer $viewRenderer,
+        ResponseFactoryInterface $responseFactory,
+        JsonResponseFactory $jsonResponseFactory,
+        RbacStorage $rbacStorage
+    ) {
+        $this->viewRenderer = $viewRenderer
+            ->withController($this)
+            ->withCsrf();
+
+        $this->responseFactory = $responseFactory;
+        $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->rbacStorage = $rbacStorage;
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -32,13 +76,13 @@ class RuleController extends WebController
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->getRbacStorage()->getRules()))
+        $dataReader = (new IterableDataReader($this->rbacStorage->getRules()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
 
-        return $this->render('index', compact('dataReader', 'paginator'));
+        return $this->viewRenderer->render('index', compact('dataReader', 'paginator'));
     }
 
     /**
@@ -63,13 +107,13 @@ class RuleController extends WebController
             $ruleForm->loadFromServerRequest($request);
 
             if (($rule = $ruleForm->save()) !== null) {
-                return $this->getResponseFactory()
+                return $this->responseFactory
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
             }
         }
 
-        return $this->render('create', compact('ruleForm', 'submitted'));
+        return $this->viewRenderer->render('create', compact('ruleForm', 'submitted'));
     }
 
     /**
@@ -79,12 +123,12 @@ class RuleController extends WebController
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->getRbacStorage()->getRuleByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        return $this->render('view', compact('rule'));
+        return $this->viewRenderer->render('view', compact('rule'));
     }
 
     /**
@@ -96,8 +140,8 @@ class RuleController extends WebController
     public function edit(Request $request, RuleForm $ruleForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->getRbacStorage()->getRuleByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
@@ -116,13 +160,13 @@ class RuleController extends WebController
             $ruleForm->loadFromServerRequest($request);
 
             if (($newRule = $ruleForm->save()) !== null) {
-                return $this->getResponseFactory()
+                return $this->responseFactory
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $newRule->getName()]));
             }
         }
 
-        return $this->render('edit', compact('rule', 'ruleForm', 'submitted'));
+        return $this->viewRenderer->render('edit', compact('rule', 'ruleForm', 'submitted'));
     }
 
     /**
@@ -133,14 +177,14 @@ class RuleController extends WebController
     public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->getRbacStorage()->getRuleByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        $this->getRbacStorage()->removeRule($rule->getName());
+        $this->rbacStorage->removeRule($rule->getName());
 
-        return $this->getResponseFactory()
+        return $this->responseFactory
             ->createResponse(302)
             ->withHeader('Location', $urlGenerator->generate('/rbac/rule/index'));
     }
@@ -164,7 +208,7 @@ class RuleController extends WebController
                     ];
                 },
                 array_filter(
-                    $this->getRbacStorage()->getRules(),
+                    $this->rbacStorage->getRules(),
                     function (Rule $rule) use ($query) {
                         return strpos($rule->getName(), $query) !== false;
                     }
@@ -172,6 +216,7 @@ class RuleController extends WebController
             );
         }
 
-        return $this->asJson(array_values($data));
+        return $this->jsonResponseFactory
+            ->createResponse(array_values($data));
     }
 }

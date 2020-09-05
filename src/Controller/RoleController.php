@@ -13,16 +13,51 @@ declare(strict_types=1);
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Form\RoleForm;
-use Mailery\Rbac\WebController;
-use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
+use Yiisoft\Data\Paginator\OffsetPaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
 use Yiisoft\Router\UrlGeneratorInterface;
+use Mailery\Web\ViewRenderer;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 
-class RoleController extends WebController
+class RoleController
 {
+    /**
+     * @var ViewRenderer
+     */
+    private ViewRenderer $viewRenderer;
+
+    /**
+     * @var ResponseFactoryInterface
+     */
+    private ResponseFactoryInterface $responseFactory;
+
+    /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
+     * @param ViewRenderer $viewRenderer
+     * @param ResponseFactoryInterface $responseFactory
+     * @param RbacStorage $rbacStorage
+     */
+    public function __construct(
+        ViewRenderer $viewRenderer,
+        ResponseFactoryInterface $responseFactory,
+        RbacStorage $rbacStorage
+    ) {
+        $this->viewRenderer = $viewRenderer
+            ->withController($this)
+            ->withCsrf();
+
+        $this->responseFactory = $responseFactory;
+        $this->rbacStorage = $rbacStorage;
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -31,13 +66,13 @@ class RoleController extends WebController
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->getRbacStorage()->getRoles()))
+        $dataReader = (new IterableDataReader($this->rbacStorage->getRoles()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
 
-        return $this->render('index', compact('dataReader', 'paginator'));
+        return $this->viewRenderer->render('index', compact('dataReader', 'paginator'));
     }
 
     /**
@@ -62,13 +97,13 @@ class RoleController extends WebController
             $roleForm->loadFromServerRequest($request);
 
             if (($role = $roleForm->save()) !== null) {
-                return $this->getResponseFactory()
+                return $this->responseFactory
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $role->getName()]));
             }
         }
 
-        return $this->render('create', compact('roleForm', 'submitted'));
+        return $this->viewRenderer->render('create', compact('roleForm', 'submitted'));
     }
 
     /**
@@ -78,12 +113,12 @@ class RoleController extends WebController
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->getRbacStorage()->getRoleByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($role = $this->rbacStorage->getRoleByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        return $this->render('view', compact('role'));
+        return $this->viewRenderer->render('view', compact('role'));
     }
 
     /**
@@ -95,8 +130,8 @@ class RoleController extends WebController
     public function edit(Request $request, RoleForm $roleForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->getRbacStorage()->getRoleByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($role = $this->rbacStorage->getRoleByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
@@ -115,14 +150,13 @@ class RoleController extends WebController
             $roleForm->loadFromServerRequest($request);
 
             if (($newRole = $roleForm->save()) !== null) {
-                return $this->getResponseFactory()
+                return $this->responseFactory
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/role/view', ['name' => $newRole->getName()]));
             }
         }
 
-        return $this->render('edit', compact('role', 'roleForm', 'submitted'));
-        ;
+        return $this->viewRenderer->render('edit', compact('role', 'roleForm', 'submitted'));
     }
 
     /**
@@ -133,14 +167,14 @@ class RoleController extends WebController
     public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($role = $this->getRbacStorage()->getRoleByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($role = $this->rbacStorage->getRoleByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        $this->getRbacStorage()->removeItem($role);
+        $this->rbacStorage->removeItem($role);
 
-        return $this->getResponseFactory()
+        return $this->responseFactory
             ->createResponse(303)
             ->withHeader('Location', $urlGenerator->generate('/rbac/role/index'));
     }

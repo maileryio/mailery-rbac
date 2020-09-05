@@ -8,6 +8,8 @@ use Mailery\Widget\Link\Link;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Permission $permission */
 /** @var bool $submitted */
+/** @var string $csrf */
+
 $this->setTitle($permission->getName());
 
 ?><div class="row">

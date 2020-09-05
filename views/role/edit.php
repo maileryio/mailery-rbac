@@ -7,7 +7,9 @@ use Mailery\Widget\Form\FormRenderer;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Role $role */
 /** @var Mailery\Rbac\Form\RoleForm $roleForm */
+/** @var string $csrf */
 /** @var bool $submitted */
+
 $this->setTitle('Edit Role #' . $role->getName());
 
 ?><div class="row">
@@ -28,6 +30,6 @@ $this->setTitle('Edit Role #' . $role->getName());
 </div>
 <div class="row">
     <div class="col-6">
-        <?= (new FormRenderer($roleForm))($submitted); ?>
+        <?= (new FormRenderer($roleForm->withCsrf($csrf)))($submitted); ?>
     </div>
 </div>

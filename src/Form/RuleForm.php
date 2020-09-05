@@ -49,6 +49,17 @@ class RuleForm extends Form
     }
 
     /**
+     * @param string $csrf
+     * @return \self
+     */
+    public function withCsrf(string $value, string $name = '_csrf'): self
+    {
+        $this->offsetSet($name, F::hidden($value));
+
+        return $this;
+    }
+
+    /**
      * @param Rule $rule
      * @return self
      */

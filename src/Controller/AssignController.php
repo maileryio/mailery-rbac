@@ -12,13 +12,66 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac\Controller;
 
-use Mailery\Rbac\WebController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Rbac\Item;
+use Mailery\Web\ViewRenderer;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Yiisoft\Rbac\Manager as RbacManager;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
+use Yiisoft\Yii\Rest\ResponseFactory\JsonResponseFactory;
 
-class AssignController extends WebController
+class AssignController
 {
+    /**
+     * @var ViewRenderer
+     */
+    private ViewRenderer $viewRenderer;
+
+    /**
+     * @var ResponseFactoryInterface
+     */
+    private ResponseFactoryInterface $responseFactory;
+
+    /**
+     * @var JsonResponseFactory
+     */
+    private JsonResponseFactory $jsonResponseFactory;
+
+    /**
+     * @var RbacManager
+     */
+    private RbacManager $rbacManager;
+
+    /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
+     * @param ViewRenderer $viewRenderer
+     * @param ResponseFactoryInterface $responseFactory
+     * @param JsonResponseFactory $jsonResponseFactory
+     * @param RbacManager $rbacManager
+     * @param RbacStorage $rbacStorage
+     */
+    public function __construct(
+        ViewRenderer $viewRenderer,
+        ResponseFactoryInterface $responseFactory,
+        JsonResponseFactory $jsonResponseFactory,
+        RbacManager $rbacManager,
+        RbacStorage $rbacStorage
+    ) {
+        $this->viewRenderer = $viewRenderer
+            ->withController($this)
+            ->withCsrf();
+
+        $this->responseFactory = $responseFactory;
+        $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->rbacManager = $rbacManager;
+        $this->rbacStorage = $rbacStorage;
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -26,11 +79,12 @@ class AssignController extends WebController
     public function assigned(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
-            return $this->getResponseFactory()
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        return $this->asJson($this->getAssignedItems($currentItem));
+        return $this->jsonResponseFactory
+            ->createResponse($this->getAssignedItems($currentItem));
     }
 
     /**
@@ -40,11 +94,12 @@ class AssignController extends WebController
     public function unassigned(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
-            return $this->getResponseFactory()
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        return $this->asJson($this->getUnassignedItems($currentItem));
+        return $this->jsonResponseFactory
+            ->createResponse($this->getUnassignedItems($currentItem));
     }
 
     /**
@@ -54,7 +109,7 @@ class AssignController extends WebController
     public function assign(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
-            return $this->getResponseFactory()
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
@@ -65,19 +120,20 @@ class AssignController extends WebController
                 continue;
             }
 
-            if ($this->getRbacManager()->canAddChild($currentItem, $childItem)
-                && !$this->getRbacManager()->hasChild($currentItem, $childItem)) {
-                $this->getRbacManager()->addChild($currentItem, $childItem);
+            if ($this->rbacManager->canAddChild($currentItem, $childItem)
+                && !$this->rbacManager->hasChild($currentItem, $childItem)) {
+                $this->rbacManager->addChild($currentItem, $childItem);
             }
         }
 
-        return $this->asJson([
-            'success' => true,
-            'data' => [
-                'assigned' => $this->getAssignedItems($currentItem),
-                'unassigned' => $this->getUnassignedItems($currentItem),
-            ],
-        ]);
+        return $this->jsonResponseFactory
+            ->createResponse([
+                'success' => true,
+                'data' => [
+                    'assigned' => $this->getAssignedItems($currentItem),
+                    'unassigned' => $this->getUnassignedItems($currentItem),
+                ],
+            ]);
     }
 
     /**
@@ -87,7 +143,7 @@ class AssignController extends WebController
     public function unassign(Request $request): Response
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
-            return $this->getResponseFactory()
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
@@ -98,18 +154,19 @@ class AssignController extends WebController
                 continue;
             }
 
-            if ($this->getRbacManager()->hasChild($currentItem, $childItem)) {
-                $this->getRbacManager()->removeChild($currentItem, $childItem);
+            if ($this->rbacManager->hasChild($currentItem, $childItem)) {
+                $this->rbacManager->removeChild($currentItem, $childItem);
             }
         }
 
-        return $this->asJson([
-            'success' => true,
-            'data' => [
-                'assigned' => $this->getAssignedItems($currentItem),
-                'unassigned' => $this->getUnassignedItems($currentItem),
-            ],
-        ]);
+        return $this->jsonResponseFactory
+            ->createResponse([
+                'success' => true,
+                'data' => [
+                    'assigned' => $this->getAssignedItems($currentItem),
+                    'unassigned' => $this->getUnassignedItems($currentItem),
+                ],
+            ]);
     }
 
     /**
@@ -129,7 +186,7 @@ class AssignController extends WebController
             return null;
         }
 
-        return $this->getRbacStorage()->{$methodName}($name);
+        return $this->rbacStorage->{$methodName}($name);
     }
 
     /**
@@ -168,7 +225,7 @@ class AssignController extends WebController
             'children' => [],
         ];
 
-        $items = $this->getRbacStorage()->getChildrenByName($currentItem->getName());
+        $items = $this->rbacStorage->getChildrenByName($currentItem->getName());
 
         foreach ($items as $item) {
             $children = [
@@ -221,12 +278,12 @@ class AssignController extends WebController
             'children' => [],
         ];
 
-        $items = $this->getRbacStorage()->getRoles() + $this->getRbacStorage()->getPermissions();
+        $items = $this->rbacStorage->getRoles() + $this->rbacStorage->getPermissions();
 
         foreach ($items as $item) {
             if ($currentItem === $item
-                || $this->getRbacManager()->hasChild($currentItem, $item)
-                || !$this->getRbacManager()->canAddChild($currentItem, $item)) {
+                || $this->rbacManager->hasChild($currentItem, $item)
+                || !$this->rbacManager->canAddChild($currentItem, $item)) {
                 continue;
             }
 

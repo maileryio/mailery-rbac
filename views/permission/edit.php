@@ -7,7 +7,9 @@ use Mailery\Widget\Form\FormRenderer;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Permission $permission */
 /** @var Mailery\Rbac\Form\PermissionForm $permissionForm */
+/** @var string $csrf */
 /** @var bool $submitted */
+
 $this->setTitle('Edit Permission #' . $permission->getName());
 
 ?><div class="row">
@@ -28,6 +30,6 @@ $this->setTitle('Edit Permission #' . $permission->getName());
 </div>
 <div class="row">
     <div class="col-6">
-        <?= (new FormRenderer($permissionForm))($submitted); ?>
+        <?= (new FormRenderer($permissionForm->withCsrf($csrf)))($submitted); ?>
     </div>
 </div>

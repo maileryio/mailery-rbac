@@ -7,7 +7,9 @@ use Mailery\Widget\Form\FormRenderer;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Rule $rule */
 /** @var Mailery\Rbac\Form\RuleForm $ruleForm */
+/** @var string $csrf */
 /** @var bool $submitted */
+
 $this->setTitle('Edit Rule #' . $rule->getName());
 
 ?><div class="row">
@@ -28,6 +30,6 @@ $this->setTitle('Edit Rule #' . $rule->getName());
 </div>
 <div class="row">
     <div class="col-6">
-        <?= (new FormRenderer($ruleForm))($submitted); ?>
+        <?= (new FormRenderer($ruleForm->withCsrf($csrf)))($submitted); ?>
     </div>
 </div>

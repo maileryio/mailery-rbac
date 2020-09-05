@@ -7,7 +7,9 @@ use Mailery\Widget\Link\Link;
 /** @var Mailery\Web\View\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Role $role */
+/** @var string $csrf */
 /** @var bool $submitted */
+
 $this->setTitle($role->getName());
 
 ?><div class="row">

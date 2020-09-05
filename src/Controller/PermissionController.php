@@ -13,16 +13,51 @@ declare(strict_types=1);
 namespace Mailery\Rbac\Controller;
 
 use Mailery\Rbac\Form\PermissionForm;
-use Mailery\Rbac\WebController;
-use Mailery\Widget\Dataview\Paginator\OffsetPaginator;
+use Yiisoft\Data\Paginator\OffsetPaginator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
 use Yiisoft\Router\UrlGeneratorInterface;
+use Mailery\Web\ViewRenderer;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Yiisoft\Rbac\StorageInterface as RbacStorage;
 
-class PermissionController extends WebController
+class PermissionController
 {
+    /**
+     * @var ViewRenderer
+     */
+    private ViewRenderer $viewRenderer;
+
+    /**
+     * @var ResponseFactoryInterface
+     */
+    private ResponseFactoryInterface $responseFactory;
+
+    /**
+     * @var RbacStorage
+     */
+    private RbacStorage $rbacStorage;
+
+    /**
+     * @param ViewRenderer $viewRenderer
+     * @param ResponseFactoryInterface $responseFactory
+     * @param RbacStorage $rbacStorage
+     */
+    public function __construct(
+        ViewRenderer $viewRenderer,
+        ResponseFactoryInterface $responseFactory,
+        RbacStorage $rbacStorage
+    ) {
+        $this->viewRenderer = $viewRenderer
+            ->withController($this)
+            ->withCsrf();
+
+        $this->responseFactory = $responseFactory;
+        $this->rbacStorage = $rbacStorage;
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -31,13 +66,13 @@ class PermissionController extends WebController
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->getRbacStorage()->getPermissions()))
+        $dataReader = (new IterableDataReader($this->rbacStorage->getPermissions()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
             ->withCurrentPage($queryParams['page'] ?? 1);
 
-        return $this->render('index', compact('dataReader', 'paginator'));
+        return $this->viewRenderer->render('index', compact('dataReader', 'paginator'));
     }
 
     /**
@@ -62,13 +97,13 @@ class PermissionController extends WebController
             $permissionForm->loadFromServerRequest($request);
 
             if (($permission = $permissionForm->save()) !== null) {
-                return $this->getResponseFactory()
+                return $this->responseFactory
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));
             }
         }
 
-        return $this->render('create', compact('permissionForm', 'submitted'));
+        return $this->viewRenderer->render('create', compact('permissionForm', 'submitted'));
     }
 
     /**
@@ -78,12 +113,12 @@ class PermissionController extends WebController
     public function view(Request $request): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->getRbacStorage()->getPermissionByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        return $this->render('view', compact('permission'));
+        return $this->viewRenderer->render('view', compact('permission'));
     }
 
     /**
@@ -95,8 +130,8 @@ class PermissionController extends WebController
     public function edit(Request $request, PermissionForm $permissionForm, UrlGeneratorInterface $urlGenerator): Response
     {
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->getRbacStorage()->getPermissionByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
@@ -115,13 +150,13 @@ class PermissionController extends WebController
             $permissionForm->loadFromServerRequest($request);
 
             if (($newPermission = $permissionForm->save()) !== null) {
-                return $this->getResponseFactory()
+                return $this->responseFactory
                     ->createResponse(302)
                     ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $newPermission->getName()]));
             }
         }
 
-        return $this->render('edit', compact('permission', 'permissionForm', 'submitted'));
+        return $this->viewRenderer->render('edit', compact('permission', 'permissionForm', 'submitted'));
     }
 
     /**
@@ -131,17 +166,16 @@ class PermissionController extends WebController
      */
     public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
-        $response = $this->getResponseFactory()->createResponse();
-
         $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->getRbacStorage()->getPermissionByName($name)) === null) {
-            return $this->getResponseFactory()
+        if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
+            return $this->responseFactory
                 ->createResponse(404);
         }
 
-        $this->getRbacStorage()->removeItem($permission);
+        $this->rbacStorage->removeItem($permission);
 
-        return $response
+        return $this->responseFactory
+            ->createResponse()
             ->withStatus(303)
             ->withHeader('Location', $urlGenerator->generate('/rbac/permission/index'));
     }

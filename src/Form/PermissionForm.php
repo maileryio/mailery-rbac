@@ -57,6 +57,17 @@ class PermissionForm extends Form
     }
 
     /**
+     * @param string $csrf
+     * @return \self
+     */
+    public function withCsrf(string $value, string $name = '_csrf'): self
+    {
+        $this->offsetSet($name, F::hidden($value));
+
+        return $this;
+    }
+
+    /**
      * @param Permission $permission
      * @return self
      */
