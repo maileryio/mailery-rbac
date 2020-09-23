@@ -3,7 +3,7 @@
 use Mailery\Icon\Icon;
 use Mailery\Widget\Form\FormRenderer;
 
-/** @var Mailery\Web\View\WebView $this */
+/** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Role $role */
 /** @var Mailery\Rbac\Form\RoleForm $roleForm */

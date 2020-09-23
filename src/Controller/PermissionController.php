@@ -19,7 +19,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
 use Yiisoft\Router\UrlGeneratorInterface;
-use Mailery\Web\ViewRenderer;
+use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
 
@@ -52,6 +52,7 @@ class PermissionController
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
+            ->withViewBasePath(dirname(dirname(__DIR__)) . '/views')
             ->withCsrf();
 
         $this->responseFactory = $responseFactory;

@@ -15,11 +15,11 @@ namespace Mailery\Rbac\Controller;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Rbac\Item;
-use Mailery\Web\ViewRenderer;
+use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\Manager as RbacManager;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
-use Yiisoft\Yii\Rest\ResponseFactory\JsonResponseFactory;
+use Yiisoft\Yii\Api\ResponseFactory\JsonResponseFactory;
 
 class AssignController
 {
@@ -64,6 +64,7 @@ class AssignController
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
+            ->withViewBasePath(dirname(dirname(__DIR__)) . '/views')
             ->withCsrf();
 
         $this->responseFactory = $responseFactory;

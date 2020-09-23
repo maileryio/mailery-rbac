@@ -30,7 +30,7 @@
         "yiisoft/rbac": "^3.0@dev",
         "yiisoft/rbac-php": "^3.0@dev",
         "yiisoft/router": "^3.0@dev",
-        "yiisoft/yii-rest": "^3.0@dev"
+        "yiisoft/yii-api": "^3.0@dev"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",

@@ -20,10 +20,10 @@ use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
 use Yiisoft\Rbac\Rule;
 use Yiisoft\Router\UrlGeneratorInterface;
-use Mailery\Web\ViewRenderer;
+use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
-use Yiisoft\Yii\Rest\ResponseFactory\JsonResponseFactory;
+use Yiisoft\Yii\Api\ResponseFactory\JsonResponseFactory;
 
 class RuleController
 {
@@ -61,6 +61,7 @@ class RuleController
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
+            ->withViewBasePath(dirname(dirname(__DIR__)) . '/views')
             ->withCsrf();
 
         $this->responseFactory = $responseFactory;

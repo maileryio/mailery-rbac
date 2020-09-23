@@ -9,7 +9,7 @@ use Mailery\Widget\Link\Link;
 use Yiisoft\Html\Html;
 use Yiisoft\Rbac\Role;
 
-/** @var Mailery\Web\View\WebView $this */
+/** @var Yiisoft\Yii\WebView $this */
 /** @var Yiisoft\Aliases\Aliases $aliases */
 /** @var Yiisoft\Router\UrlGeneratorInterface $urlGenerator */
 /** @var Yiisoft\Data\Reader\DataReaderInterface $dataReader*/
