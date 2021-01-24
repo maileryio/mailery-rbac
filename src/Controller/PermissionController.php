@@ -52,8 +52,7 @@ class PermissionController
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
-            ->withViewBasePath(dirname(dirname(__DIR__)) . '/views')
-            ->withCsrf();
+            ->withViewBasePath(dirname(dirname(__DIR__)) . '/views');
 
         $this->responseFactory = $responseFactory;
         $this->rbacStorage = $rbacStorage;
