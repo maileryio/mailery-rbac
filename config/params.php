@@ -11,14 +11,7 @@ declare(strict_types=1);
  */
 
 use Mailery\Menu\MenuItem;
-use Mailery\Rbac\Controller\AssignController;
-use Mailery\Rbac\Controller\PermissionController;
-use Mailery\Rbac\Controller\RoleController;
-use Mailery\Rbac\Controller\RuleController;
-use Mailery\Rbac\Middleware\AssetBundleMiddleware;
 use Opis\Closure\SerializableClosure;
-use Yiisoft\Router\Group;
-use Yiisoft\Router\Route;
 use Yiisoft\Router\UrlGeneratorInterface;
 
 return [
