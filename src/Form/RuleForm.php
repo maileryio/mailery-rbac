@@ -25,7 +25,7 @@ class RuleForm extends Form
     /**
      * @var Rule|null
      */
-    private ?Rule $rule;
+    private ?Rule $rule = null;
 
     /**
      * @var RbacManager

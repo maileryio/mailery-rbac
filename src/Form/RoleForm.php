@@ -26,7 +26,7 @@ class RoleForm extends Form
     /**
      * @var Role|null
      */
-    private ?Role $role;
+    private ?Role $role = null;
 
     /**
      * @var RbacManager

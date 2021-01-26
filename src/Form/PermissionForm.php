@@ -26,7 +26,7 @@ class PermissionForm extends Form
     /**
      * @var Permission|null
      */
-    private ?Permission $permission;
+    private ?Permission $permission = null;
 
     /**
      * @var RbacManager
