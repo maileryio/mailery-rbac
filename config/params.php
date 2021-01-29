@@ -16,31 +16,26 @@ use Yiisoft\Router\UrlGeneratorInterface;
 
 return [
     'rbacNavbarMenuItem' => (new MenuItem())
-            ->withLabel('Access Control')
-            ->withChildItems([
-                'roles' => (new MenuItem())
-                    ->withLabel('Roles')
-                    ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
-                        return $urlGenerator->generate('/rbac/role/index');
-                    }))
-                    ->withOrder(100),
-                'rules' => (new MenuItem())
-                    ->withLabel('Rules')
-                    ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
-                        return $urlGenerator->generate('/rbac/rule/index');
-                    }))
-                    ->withOrder(200),
-                'permissions' => (new MenuItem())
-                    ->withLabel('Permissions')
-                    ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
-                        return $urlGenerator->generate('/rbac/permission/index');
-                    }))
-                    ->withOrder(300),
-            ])
-            ->withOrder(200),
-
-    'rbac' => [
-        'directory' => '@root/rbac',
-        'defaultRoles' => ['admin', 'guest'],
-    ],
+        ->withLabel('Access Control')
+        ->withChildItems([
+            'roles' => (new MenuItem())
+                ->withLabel('Roles')
+                ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
+                    return $urlGenerator->generate('/rbac/role/index');
+                }))
+                ->withOrder(100),
+            'rules' => (new MenuItem())
+                ->withLabel('Rules')
+                ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
+                    return $urlGenerator->generate('/rbac/rule/index');
+                }))
+                ->withOrder(200),
+            'permissions' => (new MenuItem())
+                ->withLabel('Permissions')
+                ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
+                    return $urlGenerator->generate('/rbac/permission/index');
+                }))
+                ->withOrder(300),
+        ])
+        ->withOrder(200),
 ];

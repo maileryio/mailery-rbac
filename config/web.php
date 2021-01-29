@@ -10,9 +10,12 @@ declare(strict_types=1);
  * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
  */
 
+use Yiisoft\Rbac\RuleFactory\ClassNameRuleFactory;
+use Yiisoft\Rbac\RuleFactoryInterface;
 use Yiisoft\Access\AccessCheckerInterface;
-use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Rbac\Manager;
+use Yiisoft\Rbac\StorageInterface;
+use Yiisoft\Rbac\Php\Storage;
 
 $navbarSystem = $params['menu']['navbar']['items']['system'];
 $navbarSystemChilds = $navbarSystem->getChildItems();
@@ -20,5 +23,12 @@ $navbarSystemChilds['rbac'] = $params['rbacNavbarMenuItem'];
 $navbarSystem->setChildItems($navbarSystemChilds);
 
 return [
-    AccessCheckerInterface::class => Reference::to(Manager::class),
+    StorageInterface::class => [
+        '__class' => Storage::class,
+        '__construct()' => [
+            'directory' => $params['yiisoft/aliases']['aliases']['@root'] . DIRECTORY_SEPARATOR . 'rbac',
+        ],
+    ],
+    RuleFactoryInterface::class => ClassNameRuleFactory::class,
+    AccessCheckerInterface::class => Manager::class,
 ];
