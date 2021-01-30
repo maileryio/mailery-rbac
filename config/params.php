@@ -10,32 +10,50 @@ declare(strict_types=1);
  * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
  */
 
-use Mailery\Menu\MenuItem;
-use Opis\Closure\SerializableClosure;
 use Yiisoft\Router\UrlGeneratorInterface;
 
 return [
-    'rbacNavbarMenuItem' => (new MenuItem())
-        ->withLabel('Access Control')
-        ->withChildItems([
-            'roles' => (new MenuItem())
-                ->withLabel('Roles')
-                ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
-                    return $urlGenerator->generate('/rbac/role/index');
-                }))
-                ->withOrder(100),
-            'rules' => (new MenuItem())
-                ->withLabel('Rules')
-                ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
-                    return $urlGenerator->generate('/rbac/rule/index');
-                }))
-                ->withOrder(200),
-            'permissions' => (new MenuItem())
-                ->withLabel('Permissions')
-                ->withUrl(new SerializableClosure(function (UrlGeneratorInterface $urlGenerator) {
-                    return $urlGenerator->generate('/rbac/permission/index');
-                }))
-                ->withOrder(300),
-        ])
-        ->withOrder(200),
+    'maileryio/mailery-menu-navbar' => [
+        'items' => [
+            'system' => [
+                'items' => [
+                    'rbac' => [
+                        'label' => static function () {
+                            return 'Access Control';
+                        },
+                        'order' => 200,
+                        'items' => [
+                            'roles' => [
+                                'label' => static function () {
+                                    return 'Roles';
+                                },
+                                'url' => static function (UrlGeneratorInterface $urlGenerator) {
+                                    return $urlGenerator->generate('/rbac/role/index');
+                                },
+                                'order' => 100,
+                            ],
+                            'rules' => [
+                                'label' => static function () {
+                                    return 'Rules';
+                                },
+                                'url' => static function (UrlGeneratorInterface $urlGenerator) {
+                                    return $urlGenerator->generate('/rbac/rule/index');
+                                },
+                                'order' => 200,
+                            ],
+                            'permissions' => [
+                                'label' => static function () {
+                                    return 'Permissions';
+                                },
+                                'url' => static function (UrlGeneratorInterface $urlGenerator) {
+                                    return $urlGenerator->generate('/rbac/permission/index');
+                                },
+                                'order' => 300,
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ],
+    ],
 ];

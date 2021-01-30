@@ -17,11 +17,6 @@ use Yiisoft\Rbac\Manager;
 use Yiisoft\Rbac\StorageInterface;
 use Yiisoft\Rbac\Php\Storage;
 
-$navbarSystem = $params['menu']['navbar']['items']['system'];
-$navbarSystemChilds = $navbarSystem->getChildItems();
-$navbarSystemChilds['rbac'] = $params['rbacNavbarMenuItem'];
-$navbarSystem->setChildItems($navbarSystemChilds);
-
 return [
     StorageInterface::class => [
         '__class' => Storage::class,
