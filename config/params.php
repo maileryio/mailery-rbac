@@ -10,9 +10,16 @@ declare(strict_types=1);
  * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
  */
 
+use Mailery\Rbac\Console\ResetCommand;
 use Yiisoft\Router\UrlGeneratorInterface;
 
 return [
+    'yiisoft/yii-console' => [
+        'commands' => [
+            'rbac/reset' => ResetCommand::class,
+        ],
+    ],
+
     'maileryio/mailery-menu-navbar' => [
         'items' => [
             'system' => [
