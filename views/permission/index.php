@@ -84,6 +84,7 @@ $this->setTitle('Access permissions');
                             $urlGenerator->generate('/rbac/permission/edit', ['name' => $data->getName()]),
                             [
                                 'class' => 'text-decoration-none mr-3',
+                                'encode' => false,
                             ]
                         );
                     })
@@ -103,6 +104,7 @@ $this->setTitle('Access permissions');
                             ->confirm('Are you sure?')
                             ->options([
                                 'class' => 'text-decoration-none text-danger',
+                                'encode' => false,
                             ]);
                     }),
             ]);

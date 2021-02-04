@@ -67,6 +67,7 @@ $this->setTitle('Access rules');
                             $urlGenerator->generate('/rbac/rule/edit', ['name' => $data->getName()]),
                             [
                                 'class' => 'text-decoration-none mr-3',
+                                'encode' => false,
                             ]
                         );
                     })
@@ -86,6 +87,7 @@ $this->setTitle('Access rules');
                             ->confirm('Are you sure?')
                             ->options([
                                 'class' => 'text-decoration-none text-danger',
+                                'encode' => false,
                             ]);
                     }),
             ]);
