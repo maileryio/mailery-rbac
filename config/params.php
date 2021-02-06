@@ -28,7 +28,6 @@ return [
                         'label' => static function () {
                             return 'Access Control';
                         },
-                        'order' => 200,
                         'items' => [
                             'roles' => [
                                 'label' => static function () {
@@ -37,7 +36,6 @@ return [
                                 'url' => static function (UrlGeneratorInterface $urlGenerator) {
                                     return $urlGenerator->generate('/rbac/role/index');
                                 },
-                                'order' => 100,
                             ],
                             'rules' => [
                                 'label' => static function () {
@@ -46,7 +44,6 @@ return [
                                 'url' => static function (UrlGeneratorInterface $urlGenerator) {
                                     return $urlGenerator->generate('/rbac/rule/index');
                                 },
-                                'order' => 200,
                             ],
                             'permissions' => [
                                 'label' => static function () {
@@ -55,7 +52,6 @@ return [
                                 'url' => static function (UrlGeneratorInterface $urlGenerator) {
                                     return $urlGenerator->generate('/rbac/permission/index');
                                 },
-                                'order' => 300,
                             ],
                         ],
                     ],
