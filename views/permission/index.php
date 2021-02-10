@@ -49,7 +49,7 @@ $this->setTitle('Access permissions');
             ->columns([
                 (new DataColumn())
                     ->header('Name')
-                    ->content(function (Permission $data, int $index) use ($urlGenerator) {
+                    ->content(function (Permission $data, $index) use ($urlGenerator) {
                         return Html::a(
                             $data->getName(),
                             $urlGenerator->generate('/rbac/permission/view', ['name' => $data->getName()])
@@ -57,7 +57,7 @@ $this->setTitle('Access permissions');
                     }),
                 (new DataColumn())
                     ->header('Rule')
-                    ->content(function (Permission $data, int $index) use ($urlGenerator) {
+                    ->content(function (Permission $data, $index) use ($urlGenerator) {
                         if (empty($data->getRuleName())) {
                             return $data->getRuleName();
                         }
@@ -69,7 +69,7 @@ $this->setTitle('Access permissions');
                     }),
                 (new DataColumn())
                     ->header('Description')
-                    ->content(function (Permission $data, int $index) {
+                    ->content(function (Permission $data, $index) {
                         return $data->getDescription();
                     }),
                 (new ActionColumn())
@@ -78,7 +78,7 @@ $this->setTitle('Access permissions');
                     ])
                     ->header('Edit')
                     ->view('')
-                    ->update(function (Permission $data, int $index) use ($urlGenerator) {
+                    ->update(function (Permission $data, $index) use ($urlGenerator) {
                         return Html::a(
                             (string) Icon::widget()->name('pencil'),
                             $urlGenerator->generate('/rbac/permission/edit', ['name' => $data->getName()]),
@@ -96,7 +96,7 @@ $this->setTitle('Access permissions');
                     ->header('Delete')
                     ->view('')
                     ->update('')
-                    ->delete(function (Permission $data, int $index) use ($urlGenerator) {
+                    ->delete(function (Permission $data, $index) use ($urlGenerator) {
                         return Link::widget()
                             ->label((string) Icon::widget()->name('delete')->options(['class' => 'mr-1']))
                             ->method('delete')

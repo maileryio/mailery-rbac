@@ -49,7 +49,7 @@ $this->setTitle('User roles');
             ->columns([
                 (new DataColumn())
                     ->header('Name')
-                    ->content(function (Role $data, int $index) use ($urlGenerator) {
+                    ->content(function (Role $data, $index) use ($urlGenerator) {
                         return Html::a(
                             $data->getName(),
                             $urlGenerator->generate('/rbac/role/view', ['name' => $data->getName()])
@@ -57,7 +57,7 @@ $this->setTitle('User roles');
                     }),
                 (new DataColumn())
                     ->header('Rule')
-                    ->content(function (Role $data, int $index) use ($urlGenerator) {
+                    ->content(function (Role $data, $index) use ($urlGenerator) {
                         if (empty($data->getRuleName())) {
                             return $data->getRuleName();
                         }
@@ -69,7 +69,7 @@ $this->setTitle('User roles');
                     }),
                 (new DataColumn())
                     ->header('Description')
-                    ->content(function (Role $data, int $index) {
+                    ->content(function (Role $data, $index) {
                         return $data->getDescription();
                     }),
                 (new ActionColumn())
@@ -78,7 +78,7 @@ $this->setTitle('User roles');
                     ])
                     ->header('Edit')
                     ->view('')
-                    ->update(function (Role $data, int $index) use ($urlGenerator) {
+                    ->update(function (Role $data, $index) use ($urlGenerator) {
                         return Html::a(
                             (string) Icon::widget()->name('pencil'),
                             $urlGenerator->generate('/rbac/role/edit', ['name' => $data->getName()]),
@@ -96,7 +96,7 @@ $this->setTitle('User roles');
                     ->header('Delete')
                     ->view('')
                     ->update('')
-                    ->delete(function (Role $data, int $index) use ($urlGenerator) {
+                    ->delete(function (Role $data, $index) use ($urlGenerator) {
                         return Link::widget()
                             ->label((string) Icon::widget()->name('delete')->options(['class' => 'mr-1']))
                             ->method('delete')

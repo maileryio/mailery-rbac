@@ -49,7 +49,7 @@ $this->setTitle('Access rules');
             ->columns([
                 (new DataColumn())
                     ->header('Name')
-                    ->content(function (Rule $data, int $index) use ($urlGenerator) {
+                    ->content(function (Rule $data, $index) use ($urlGenerator) {
                         return Html::a(
                             $data->getName(),
                             $urlGenerator->generate('/rbac/rule/view', ['name' => $data->getName()])
@@ -61,7 +61,7 @@ $this->setTitle('Access rules');
                     ])
                     ->header('Edit')
                     ->view('')
-                    ->update(function (Rule $data, int $index) use ($urlGenerator) {
+                    ->update(function (Rule $data, $index) use ($urlGenerator) {
                         return Html::a(
                             (string) Icon::widget()->name('pencil'),
                             $urlGenerator->generate('/rbac/rule/edit', ['name' => $data->getName()]),
@@ -79,7 +79,7 @@ $this->setTitle('Access rules');
                     ->header('Delete')
                     ->view('')
                     ->update('')
-                    ->delete(function (Rule $data, int $index) use ($urlGenerator) {
+                    ->delete(function (Rule $data, $index) use ($urlGenerator) {
                         return Link::widget()
                             ->label((string) Icon::widget()->name('delete')->options(['class' => 'mr-1']))
                             ->method('delete')
