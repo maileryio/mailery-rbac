@@ -35,8 +35,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
         "phan/phan": "^2.4",
-        "phpunit/phpunit": "^9.0",
-        "yiisoft/composer-config-plugin": "dev-master"
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
@@ -58,12 +57,15 @@
             "dev-master": "1.0.x-dev"
         },
         "config-plugin": {
-            "common": "config/common.php",
-            "params": "config/params.php",
-            "providers-web": "config/providers-web.php",
-            "rbac-assignments": "config/rbac/assignments.php",
-            "rbac-items": "config/rbac/items.php",
-            "rbac-rules": "config/rbac/rules.php"
+            "common": "common.php",
+            "params": "params.php",
+            "providers-web": "providers-web.php",
+            "rbac-assignments": "rbac/assignments.php",
+            "rbac-items": "rbac/items.php",
+            "rbac-rules": "rbac/rules.php"
+        },
+        "config-plugin-options": {
+            "source-directory": "config"
         }
     },
     "config": {
