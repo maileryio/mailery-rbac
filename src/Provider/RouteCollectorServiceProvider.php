@@ -2,7 +2,7 @@
 
 namespace Mailery\Rbac\Provider;
 
-use Yiisoft\Di\Container;
+use Psr\Container\ContainerInterface;
 use Yiisoft\Di\Support\ServiceProvider;
 use Yiisoft\Router\RouteCollectorInterface;
 use Yiisoft\Router\Group;
@@ -15,7 +15,7 @@ use Mailery\Rbac\Middleware\AssetBundleMiddleware;
 
 final class RouteCollectorServiceProvider extends ServiceProvider
 {
-    public function register(Container $container): void
+    public function register(ContainerInterface $container): void
     {
         /** @var RouteCollectorInterface $collector */
         $collector = $container->get(RouteCollectorInterface::class);
