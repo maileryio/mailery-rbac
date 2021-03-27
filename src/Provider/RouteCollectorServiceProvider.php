@@ -21,61 +21,79 @@ final class RouteCollectorServiceProvider extends ServiceProvider
         $collector = $container->get(RouteCollectorInterface::class);
 
         $collector->addGroup(
-            Group::create(
-                '/rbac',
-                [
+            Group::create('/rbac')
+                ->middleware(AssetBundleMiddleware::class)
+                ->routes(
                     // Permissions:
-                    Route::get('/permission/index', [PermissionController::class, 'index'])
-                        ->name('/rbac/permission/index'),
+                    Route::get('/permission/index')
+                        ->name('/rbac/permission/index')
+                        ->action([PermissionController::class, 'index']),
 
-
-                    Route::get('/permission/view/{name:\w+}', [PermissionController::class, 'view'])
-                        ->name('/rbac/permission/view'),
-                    Route::methods(['GET', 'POST'], '/permission/edit/{name:\w+}', [PermissionController::class, 'edit'])
-                        ->name('/rbac/permission/edit'),
-                    Route::delete('/permission/delete/{name:\w+}', [PermissionController::class, 'delete'])
-                        ->name('/rbac/permission/delete'),
-                    Route::methods(['GET', 'POST'], '/permission/create', [PermissionController::class, 'create'])
-                        ->name('/rbac/permission/create'),
+                    Route::get('/permission/view/{name:\w+}')
+                        ->name('/rbac/permission/view')
+                        ->action([PermissionController::class, 'view']),
+                    Route::methods(['GET', 'POST'], '/permission/edit/{name:\w+}')
+                        ->name('/rbac/permission/edit')
+                        ->action([PermissionController::class, 'edit']),
+                    Route::delete('/permission/delete/{name:\w+}')
+                        ->name('/rbac/permission/delete')
+                        ->action([PermissionController::class, 'delete']),
+                    Route::methods(['GET', 'POST'], '/permission/create')
+                        ->name('/rbac/permission/create')
+                        ->action([PermissionController::class, 'create']),
 
                     // Roles:
-                    Route::get('/role/index', [RoleController::class, 'index'])
-                        ->name('/rbac/role/index'),
-                    Route::get('/role/view/{name:\w+}', [RoleController::class, 'view'])
-                        ->name('/rbac/role/view'),
-                    Route::methods(['GET', 'POST'], '/role/edit/{name:\w+}', [RoleController::class, 'edit'])
-                        ->name('/rbac/role/edit'),
-                    Route::delete('/role/delete/{name:\w+}', [RoleController::class, 'delete'])
-                        ->name('/rbac/role/delete'),
-                    Route::methods(['GET', 'POST'], '/role/create', [RoleController::class, 'create'])
-                        ->name('/rbac/role/create'),
+                    Route::get('/role/index')
+                        ->name('/rbac/role/index')
+                        ->action([RoleController::class, 'index']),
+                    Route::get('/role/view/{name:\w+}')
+                        ->name('/rbac/role/view')
+                        ->action([RoleController::class, 'view']),
+                    Route::methods(['GET', 'POST'], '/role/edit/{name:\w+}')
+                        ->name('/rbac/role/edit')
+                        ->action([RoleController::class, 'edit']),
+                    Route::delete('/role/delete/{name:\w+}')
+                        ->name('/rbac/role/delete')
+                        ->action([RoleController::class, 'delete']),
+                    Route::methods(['GET', 'POST'], '/role/create')
+                        ->name('/rbac/role/create')
+                        ->action([RoleController::class, 'create']),
 
                     // Rules:
-                    Route::get('/rule/index', [RuleController::class, 'index'])
-                        ->name('/rbac/rule/index'),
-                    Route::get('/rule/view/{name:\w+}', [RuleController::class, 'view'])
-                        ->name('/rbac/rule/view'),
-                    Route::methods(['GET', 'POST'], '/rule/edit/{name:\w+}', [RuleController::class, 'edit'])
-                         ->name('/rbac/rule/edit'),
-                    Route::delete('/rule/delete/{name:\w+}', [RuleController::class, 'delete'])
-                        ->name('/rbac/rule/delete'),
-                    Route::methods(['GET', 'POST'], '/rule/create', [RuleController::class, 'create'])
-                        ->name('/rbac/rule/create'),
+                    Route::get('/rule/index')
+                        ->name('/rbac/rule/index')
+                        ->action([RuleController::class, 'index']),
+                    Route::get('/rule/view/{name:\w+}')
+                        ->name('/rbac/rule/view')
+                        ->action([RuleController::class, 'view']),
+                    Route::methods(['GET', 'POST'], '/rule/edit/{name:\w+}')
+                        ->name('/rbac/rule/edit')
+                        ->action([RuleController::class, 'edit']),
+                    Route::delete('/rule/delete/{name:\w+}')
+                        ->name('/rbac/rule/delete')
+                        ->action([RuleController::class, 'delete']),
+                    Route::methods(['GET', 'POST'], '/rule/create')
+                        ->name('/rbac/rule/create')
+                        ->action([RuleController::class, 'create']),
 
-                    Route::get('/rule/suggestions', [RuleController::class, 'suggestions'])
-                        ->name('/rbac/rule/suggestions'),
+                    Route::get('/rule/suggestions')
+                        ->name('/rbac/rule/suggestions')
+                        ->action([RuleController::class, 'suggestions']),
 
                     // Assign:
-                    Route::post('/assign', [AssignController::class, 'assign'])
-                        ->name('/rbac/assign'),
-                    Route::post('/unassign', [AssignController::class, 'unassign'])
-                        ->name('/rbac/unassign'),
-                    Route::get('/assigned', [AssignController::class, 'assigned'])
-                        ->name('/rbac/assigned'),
-                    Route::get('/unassigned', [AssignController::class, 'unassigned'])
-                        ->name('/rbac/unassigned'),
-                ]
-            )->addMiddleware(AssetBundleMiddleware::class)
+                    Route::post('/assign')
+                        ->name('/rbac/assign')
+                        ->action([AssignController::class, 'assign']),
+                    Route::post('/unassign')
+                        ->name('/rbac/unassign')
+                        ->action([AssignController::class, 'unassign']),
+                    Route::get('/assigned')
+                        ->name('/rbac/assigned')
+                        ->action([AssignController::class, 'assigned']),
+                    Route::get('/unassigned')
+                        ->name('/rbac/unassigned')
+                        ->action([AssignController::class, 'unassigned'])
+                )
         );
     }
 }
