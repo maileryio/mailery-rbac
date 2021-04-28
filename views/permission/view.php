@@ -42,7 +42,7 @@ $this->setTitle($permission->getName());
 </div>
 <div class="mb-2"></div>
 <div class="row">
-    <div class="col-12 grid-margin">
+    <div class="col-12">
         <?= DetailView::widget()
             ->data($permission)
             ->options([
@@ -77,7 +77,7 @@ $this->setTitle($permission->getName());
 </div>
 <div class="mb-2"></div>
 <div class="row">
-    <div class="col-12 grid-margin">
+    <div class="col-12">
         <ui-dual-treeview
             fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
             fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
