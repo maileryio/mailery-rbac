@@ -58,7 +58,7 @@
         "config-plugin": {
             "common": "common.php",
             "params": "params.php",
-            "providers-web": "providers-web.php",
+            "routes": "routes.php",
             "rbac-assignments": "rbac/assignments.php",
             "rbac-items": "rbac/items.php",
             "rbac-rules": "rbac/rules.php"
