@@ -17,14 +17,15 @@ use Yiisoft\Rbac\Manager;
 use Yiisoft\Rbac\StorageInterface;
 use Yiisoft\Rbac\Php\Storage;
 use Yiisoft\Aliases\Aliases;
+use Yiisoft\Factory\Definition\DynamicReference;
 
 return [
     StorageInterface::class => [
-        '__class' => Storage::class,
+        'class' => Storage::class,
         '__construct()' => [
-            'directory' => static function (Aliases $aliases) {
+            'directory' => DynamicReference::to(static function (Aliases $aliases) {
                 return $aliases->get('@rbac');
-            },
+            }),
         ],
     ],
     RuleFactoryInterface::class => ClassNameRuleFactory::class,
