@@ -8,11 +8,9 @@ use Mailery\Rbac\Controller\PermissionController;
 use Mailery\Rbac\Controller\RoleController;
 use Mailery\Rbac\Controller\RuleController;
 use Mailery\Rbac\Controller\AssignController;
-use Mailery\Rbac\Middleware\AssetBundleMiddleware;
 
 return [
     Group::create('/rbac')
-        ->middleware(AssetBundleMiddleware::class)
         ->routes(
             // Permissions:
             Route::get('/permission/index')

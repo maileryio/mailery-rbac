@@ -23,7 +23,9 @@ use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
-use Yiisoft\Yii\Api\ResponseFactory\JsonResponseFactory;
+use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\DataResponse\DataResponseFactory;
+use Yiisoft\DataResponse\Formatter\JsonDataResponseFormatter;
 
 class RuleController
 {
@@ -38,9 +40,9 @@ class RuleController
     private ResponseFactoryInterface $responseFactory;
 
     /**
-     * @var JsonResponseFactory
+     * @var DataResponseFactoryInterface
      */
-    private JsonResponseFactory $jsonResponseFactory;
+    private DataResponseFactoryInterface $dataResponseFactory;
 
     /**
      * @var RbacStorage
@@ -50,13 +52,13 @@ class RuleController
     /**
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
-     * @param JsonResponseFactory $jsonResponseFactory
+     * @param DataResponseFactoryInterface $dataResponseFactory
      * @param RbacStorage $rbacStorage
      */
     public function __construct(
         ViewRenderer $viewRenderer,
         ResponseFactoryInterface $responseFactory,
-        JsonResponseFactory $jsonResponseFactory,
+        DataResponseFactoryInterface $dataResponseFactory,
         RbacStorage $rbacStorage
     ) {
         $this->viewRenderer = $viewRenderer
@@ -64,7 +66,7 @@ class RuleController
             ->withViewPath(dirname(dirname(__DIR__)) . '/views');
 
         $this->responseFactory = $responseFactory;
-        $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->dataResponseFactory = $dataResponseFactory;
         $this->rbacStorage = $rbacStorage;
     }
 
@@ -216,7 +218,8 @@ class RuleController
             );
         }
 
-        return $this->jsonResponseFactory
-            ->createResponse(array_values($data));
+        return $this->dataResponseFactory
+            ->createResponse(array_values($data), 302)
+            ->withResponseFormatter(new JsonDataResponseFormatter());
     }
 }
