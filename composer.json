@@ -26,10 +26,7 @@
         "maileryio/widget-dataview": "dev-master",
         "maileryio/widget-form": "dev-master",
         "maileryio/widget-link": "dev-master",
-        "symfony/mime": "^5.1",
-        "yiisoft/rbac": "^3.0@dev",
-        "yiisoft/rbac-php": "^3.0@dev",
-        "yiisoft/router": "^3.0@dev"
+        "symfony/mime": "^5.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
