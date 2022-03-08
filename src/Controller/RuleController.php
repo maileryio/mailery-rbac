@@ -18,14 +18,18 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
+use Yiisoft\Http\Status;
+use Yiisoft\Http\Header;
 use Yiisoft\Rbac\Rule;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
-use Yiisoft\DataResponse\DataResponseFactory;
 use Yiisoft\DataResponse\Formatter\JsonDataResponseFormatter;
+use Mailery\Rbac\ValueObject\RuleValueObject;
+use Mailery\Rbac\Service\RuleCrudService;
+use Yiisoft\Validator\ValidatorInterface;
 
 class RuleController
 {
@@ -40,6 +44,11 @@ class RuleController
     private ResponseFactoryInterface $responseFactory;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private UrlGeneratorInterface $urlGenerator;
+
+    /**
      * @var DataResponseFactoryInterface
      */
     private DataResponseFactoryInterface $dataResponseFactory;
@@ -50,24 +59,35 @@ class RuleController
     private RbacStorage $rbacStorage;
 
     /**
+     * @var RuleCrudService
+     */
+    private RuleCrudService $ruleCrudService;
+
+    /**
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
+     * @param UrlGeneratorInterface $urlGenerator
      * @param DataResponseFactoryInterface $dataResponseFactory
      * @param RbacStorage $rbacStorage
+     * @param RuleCrudService $ruleCrudService
      */
     public function __construct(
         ViewRenderer $viewRenderer,
         ResponseFactoryInterface $responseFactory,
+        UrlGeneratorInterface $urlGenerator,
         DataResponseFactoryInterface $dataResponseFactory,
-        RbacStorage $rbacStorage
+        RbacStorage $rbacStorage,
+        RuleCrudService $ruleCrudService
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
             ->withViewPath(dirname(dirname(__DIR__)) . '/views');
 
         $this->responseFactory = $responseFactory;
+        $this->urlGenerator = $urlGenerator;
         $this->dataResponseFactory = $dataResponseFactory;
         $this->rbacStorage = $rbacStorage;
+        $this->ruleCrudService = $ruleCrudService;
     }
 
     /**
@@ -89,37 +109,6 @@ class RuleController
 
     /**
      * @param Request $request
-     * @param RuleForm $ruleForm
-     * @param UrlGeneratorInterface $urlGenerator
-     * @return Response
-     */
-    public function create(Request $request, RuleForm $ruleForm, UrlGeneratorInterface $urlGenerator): Response
-    {
-        $ruleForm
-            ->setAttributes([
-                'action' => $request->getUri()->getPath(),
-                'method' => 'post',
-                'enctype' => 'multipart/form-data',
-            ])
-        ;
-
-        $submitted = $request->getMethod() === Method::POST;
-
-        if ($submitted) {
-            $ruleForm->loadFromServerRequest($request);
-
-            if (($rule = $ruleForm->save()) !== null) {
-                return $this->responseFactory
-                    ->createResponse(302)
-                    ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
-            }
-        }
-
-        return $this->viewRenderer->render('create', compact('ruleForm', 'submitted'));
-    }
-
-    /**
-     * @param Request $request
      * @return Response
      */
     public function view(Request $request): Response
@@ -127,7 +116,7 @@ class RuleController
         $name = $request->getAttribute('name');
         if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         return $this->viewRenderer->render('view', compact('rule'));
@@ -135,60 +124,71 @@ class RuleController
 
     /**
      * @param Request $request
-     * @param RuleForm $ruleForm
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
+     * @param RuleForm $form
      * @return Response
      */
-    public function edit(Request $request, RuleForm $ruleForm, UrlGeneratorInterface $urlGenerator): Response
+    public function create(Request $request, ValidatorInterface $validator, RuleForm $form): Response
     {
-        $name = $request->getAttribute('name');
-        if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
+        $body = $request->getParsedBody();
+
+        if (($request->getMethod() === Method::POST) && $form->load($body) && $validator->validate($form)->isValid()) {
+            $valueObject = RuleValueObject::fromForm($form);
+            $rule = $this->ruleCrudService->create($valueObject);
+
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::FOUND)
+                ->withHeader(Header::LOCATION, $this->urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
         }
 
-        $ruleForm
-            ->withRule($rule)
-            ->setAttributes([
-                'action' => $request->getUri()->getPath(),
-                'method' => 'post',
-                'enctype' => 'multipart/form-data',
-            ])
-        ;
-
-        $submitted = $request->getMethod() === Method::POST;
-
-        if ($submitted) {
-            $ruleForm->loadFromServerRequest($request);
-
-            if (($newRule = $ruleForm->save()) !== null) {
-                return $this->responseFactory
-                    ->createResponse(302)
-                    ->withHeader('Location', $urlGenerator->generate('/rbac/rule/view', ['name' => $newRule->getName()]));
-            }
-        }
-
-        return $this->viewRenderer->render('edit', compact('rule', 'ruleForm', 'submitted'));
+        return $this->viewRenderer->render('create', compact('form'));
     }
 
     /**
      * @param Request $request
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
+     * @param RuleForm $form
      * @return Response
      */
-    public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
+    public function edit(Request $request, ValidatorInterface $validator, RuleForm $form): Response
+    {
+        $body = $request->getParsedBody();
+        $name = $request->getAttribute('name');
+        if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
+            return $this->responseFactory->createResponse(Status::NOT_FOUND);
+        }
+
+        $form = $form->withRule($rule);
+
+        if (($request->getMethod() === Method::POST) && $form->load($body) && $validator->validate($form)->isValid()) {
+            $valueObject = RuleValueObject::fromForm($form);
+            $rule = $this->ruleCrudService->update($rule, $valueObject);
+
+            return $this->responseFactory
+                    ->createResponse(Status::FOUND)
+                    ->withHeader(Header::LOCATION, $this->urlGenerator->generate('/rbac/rule/view', ['name' => $rule->getName()]));
+        }
+
+        return $this->viewRenderer->render('edit', compact('form', 'rule'));
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Request $request): Response
     {
         $name = $request->getAttribute('name');
         if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         $this->rbacStorage->removeRule($rule->getName());
 
         return $this->responseFactory
-            ->createResponse(302)
-            ->withHeader('Location', $urlGenerator->generate('/rbac/rule/index'));
+            ->createResponse(Status::SEE_OTHER)
+            ->withHeader(Header::LOCATION, $this->urlGenerator->generate('/rbac/rule/index'));
     }
 
     /**
@@ -219,7 +219,7 @@ class RuleController
         }
 
         return $this->dataResponseFactory
-            ->createResponse(array_values($data), 302)
+            ->createResponse(array_values($data), Status::FOUND)
             ->withResponseFormatter(new JsonDataResponseFormatter());
     }
 }

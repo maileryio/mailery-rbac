@@ -1,14 +1,13 @@
 <?php declare(strict_types=1);
 
 use Mailery\Icon\Icon;
-use Mailery\Widget\Form\FormRenderer;
 
+/** @var Yiisoft\Form\Widget\Field $field */
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Rule $rule */
-/** @var Mailery\Rbac\Form\RuleForm $ruleForm */
+/** @var Mailery\Rbac\Form\RuleForm $form */
 /** @var string $csrf */
-/** @var bool $submitted */
 
 $this->setTitle('Edit Rule #' . $rule->getName());
 
@@ -28,8 +27,4 @@ $this->setTitle('Edit Rule #' . $rule->getName());
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-6">
-        <?= (new FormRenderer($ruleForm->withCsrf($csrf)))($submitted); ?>
-    </div>
-</div>
+<?= $this->render('_form', compact('csrf', 'field', 'form')) ?>

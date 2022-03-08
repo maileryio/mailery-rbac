@@ -18,10 +18,15 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Http\Method;
+use Yiisoft\Http\Status;
+use Yiisoft\Http\Header;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
+use Mailery\Rbac\Service\PermissionCrudService;
+use Mailery\Rbac\ValueObject\PermissionValueObject;
+use Yiisoft\Validator\ValidatorInterface;
 
 class PermissionController
 {
@@ -36,26 +41,42 @@ class PermissionController
     private ResponseFactoryInterface $responseFactory;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private UrlGeneratorInterface $urlGenerator;
+
+    /**
      * @var RbacStorage
      */
     private RbacStorage $rbacStorage;
 
     /**
+     * @var PermissionCrudService
+     */
+    private PermissionCrudService $permissionCrudService;
+
+    /**
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
+     * @param UrlGeneratorInterface $urlGenerator
      * @param RbacStorage $rbacStorage
+     * @param PermissionCrudService $permissionCrudService
      */
     public function __construct(
         ViewRenderer $viewRenderer,
         ResponseFactoryInterface $responseFactory,
-        RbacStorage $rbacStorage
+        UrlGeneratorInterface $urlGenerator,
+        RbacStorage $rbacStorage,
+        PermissionCrudService $permissionCrudService
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
             ->withViewPath(dirname(dirname(__DIR__)) . '/views');
 
         $this->responseFactory = $responseFactory;
+        $this->urlGenerator = $urlGenerator;
         $this->rbacStorage = $rbacStorage;
+        $this->permissionCrudService = $permissionCrudService;
     }
 
     /**
@@ -77,37 +98,6 @@ class PermissionController
 
     /**
      * @param Request $request
-     * @param PermissionForm $permissionForm
-     * @param UrlGeneratorInterface $urlGenerator
-     * @return Response
-     */
-    public function create(Request $request, PermissionForm $permissionForm, UrlGeneratorInterface $urlGenerator): Response
-    {
-        $permissionForm
-            ->setAttributes([
-                'action' => $request->getUri()->getPath(),
-                'method' => 'post',
-                'enctype' => 'multipart/form-data',
-            ])
-        ;
-
-        $submitted = $request->getMethod() === Method::POST;
-
-        if ($submitted) {
-            $permissionForm->loadFromServerRequest($request);
-
-            if (($permission = $permissionForm->save()) !== null) {
-                return $this->responseFactory
-                    ->createResponse(302)
-                    ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));
-            }
-        }
-
-        return $this->viewRenderer->render('create', compact('permissionForm', 'submitted'));
-    }
-
-    /**
-     * @param Request $request
      * @return Response
      */
     public function view(Request $request): Response
@@ -115,7 +105,7 @@ class PermissionController
         $name = $request->getAttribute('name');
         if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         return $this->viewRenderer->render('view', compact('permission'));
@@ -123,60 +113,70 @@ class PermissionController
 
     /**
      * @param Request $request
-     * @param PermissionForm $permissionForm
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
+     * @param PermissionForm $form
      * @return Response
      */
-    public function edit(Request $request, PermissionForm $permissionForm, UrlGeneratorInterface $urlGenerator): Response
+    public function create(Request $request, ValidatorInterface $validator, PermissionForm $form): Response
     {
-        $name = $request->getAttribute('name');
-        if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
+        $body = $request->getParsedBody();
+
+        if (($request->getMethod() === Method::POST) && $form->load($body) && $validator->validate($form)->isValid()) {
+            $valueObject = PermissionValueObject::fromForm($form);
+            $permission = $this->permissionCrudService->create($valueObject);
+
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::FOUND)
+                ->withHeader(Header::LOCATION, $this->urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));
         }
 
-        $permissionForm
-            ->withPermission($permission)
-            ->setAttributes([
-                'action' => $request->getUri()->getPath(),
-                'method' => 'post',
-                'enctype' => 'multipart/form-data',
-            ])
-        ;
-
-        $submitted = $request->getMethod() === Method::POST;
-
-        if ($submitted) {
-            $permissionForm->loadFromServerRequest($request);
-
-            if (($newPermission = $permissionForm->save()) !== null) {
-                return $this->responseFactory
-                    ->createResponse(302)
-                    ->withHeader('Location', $urlGenerator->generate('/rbac/permission/view', ['name' => $newPermission->getName()]));
-            }
-        }
-
-        return $this->viewRenderer->render('edit', compact('permission', 'permissionForm', 'submitted'));
+        return $this->viewRenderer->render('create', compact('form'));
     }
 
     /**
      * @param Request $request
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
+     * @param PermissionForm $form
      * @return Response
      */
-    public function delete(Request $request, UrlGeneratorInterface $urlGenerator): Response
+    public function edit(Request $request, ValidatorInterface $validator, PermissionForm $form): Response
+    {
+        $body = $request->getParsedBody();
+        $name = $request->getAttribute('name');
+        if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
+            return $this->responseFactory->createResponse(Status::NOT_FOUND);
+        }
+
+        $form = $form->withPermission($permission);
+
+        if (($request->getMethod() === Method::POST) && $form->load($body) && $validator->validate($form)->isValid()) {
+            $valueObject = PermissionValueObject::fromForm($form);
+            $permission = $this->permissionCrudService->update($permission, $valueObject);
+
+            return $this->responseFactory
+                    ->createResponse(Status::FOUND)
+                    ->withHeader(Header::LOCATION, $this->urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]));
+        }
+
+        return $this->viewRenderer->render('edit', compact('form', 'permission'));
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Request $request): Response
     {
         $name = $request->getAttribute('name');
         if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         $this->rbacStorage->removeItem($permission);
 
         return $this->responseFactory
-            ->createResponse()
-            ->withStatus(303)
-            ->withHeader('Location', $urlGenerator->generate('/rbac/permission/index'));
+            ->createResponse(303)
+            ->withHeader(Header::LOCATION, $this->urlGenerator->generate('/rbac/permission/index'));
     }
 }

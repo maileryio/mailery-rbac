@@ -1,12 +1,10 @@
 <?php declare(strict_types=1);
 
-use Mailery\Widget\Form\FormRenderer;
-
+/** @var Yiisoft\Form\Widget\Field $field */
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
-/** @var FormManager\Form $permissionForm */
+/** @var Mailery\Rbac\Form\PermissionForm $form */
 /** @var string $csrf */
-/** @var bool $submitted */
 
 $this->setTitle('New Permission');
 
@@ -23,8 +21,4 @@ $this->setTitle('New Permission');
     </div>
 </div>
 <div class="mb-2"></div>
-<div class="row">
-    <div class="col-6">
-        <?= (new FormRenderer($permissionForm->withCsrf($csrf)))($submitted); ?>
-    </div>
-</div>
+<?= $this->render('_form', compact('csrf', 'field', 'form')) ?>

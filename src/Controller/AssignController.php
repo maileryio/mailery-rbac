@@ -20,6 +20,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\Manager as RbacManager;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Yiisoft\Yii\Api\ResponseFactory\JsonResponseFactory;
+use Yiisoft\Http\Status;
 
 class AssignController
 {
@@ -80,7 +81,7 @@ class AssignController
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         return $this->jsonResponseFactory
@@ -95,7 +96,7 @@ class AssignController
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         return $this->jsonResponseFactory
@@ -110,7 +111,7 @@ class AssignController
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         $items = json_decode($request->getBody()->getContents(), true);
@@ -144,7 +145,7 @@ class AssignController
     {
         if (($currentItem = $this->getCurrentItem($request)) === null) {
             return $this->responseFactory
-                ->createResponse(404);
+                ->createResponse(Status::NOT_FOUND);
         }
 
         $items = json_decode($request->getBody()->getContents(), true);

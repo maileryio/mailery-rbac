@@ -12,26 +12,39 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac\Form;
 
-use FormManager\Factory as F;
-use FormManager\Form;
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Yiisoft\Rbac\Manager as RbacManager;
 use Yiisoft\Rbac\Role;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
-use Yiisoft\Router\UrlGeneratorInterface;
+use Yiisoft\Form\HtmlOptions\RequiredHtmlOptions;
+use Yiisoft\Validator\Rule\Required;
+use Yiisoft\Form\HtmlOptions\HasLengthHtmlOptions;
+use Yiisoft\Validator\Rule\HasLength;
+use Yiisoft\Validator\Rule\MatchRegularExpression;
+use Yiisoft\Validator\Rule\Callback;
+use Yiisoft\Validator\Result;
+use Yiisoft\Form\FormModel;
 
-class RoleForm extends Form
+class RoleForm extends FormModel
 {
+
+    /**
+     * @var string|null
+     */
+    private ?string $name = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $ruleName = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $description = null;
+
     /**
      * @var Role|null
      */
     private ?Role $role = null;
-
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
 
     /**
      * @var RbacStorage
@@ -39,32 +52,12 @@ class RoleForm extends Form
     private RbacStorage $rbacStorage;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * @param RbacManager $rbacManager
      * @param RbacStorage $rbacStorage
-     * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(RbacManager $rbacManager, RbacStorage $rbacStorage, UrlGeneratorInterface $urlGenerator)
+    public function __construct(RbacStorage $rbacStorage)
     {
-        $this->rbacManager = $rbacManager;
         $this->rbacStorage = $rbacStorage;
-        $this->urlGenerator = $urlGenerator;
-        parent::__construct($this->inputs());
-    }
-
-    /**
-     * @param string $csrf
-     * @return \self
-     */
-    public function withCsrf(string $value, string $name = '_csrf'): self
-    {
-        $this->offsetSet($name, F::hidden($value));
-
-        return $this;
+        parent::__construct();
     }
 
     /**
@@ -73,104 +66,88 @@ class RoleForm extends Form
      */
     public function withRole(Role $role): self
     {
-        $this->role = $role;
-        $this->offsetSet('', F::submit('Update'));
+        $new = clone $this;
+        $new->role = $role;
+        $new->name = $role->getName();
+        $new->ruleName = $role->getRuleName();
+        $new->description = $role->getDescription();
 
-        $this['name']->setValue($role->getName());
-        $this['ruleName']->setValue($role->getRuleName());
-        $this['description']->setValue($role->getDescription());
-
-        return $this;
+        return $new;
     }
 
     /**
-     * @return Role|null
+     * @return string|null
      */
-    public function save(): ?Role
+    public function getName(): ?string
     {
-        if (!$this->isValid()) {
-            return null;
-        }
+        return $this->name;
+    }
 
-        $name = $this['name']->getValue();
-        $ruleName = $this['ruleName']->getValue();
-        $description = $this['description']->getValue();
-        $timestamp = time();
+    /**
+     * @return string|null
+     */
+    public function getRuleName(): ?string
+    {
+        return $this->ruleName;
+    }
 
-        if ($this->role === null) {
-            $role = (new Role($name))
-                ->withCreatedAt($timestamp);
-        } else {
-            $role = clone $this->role;
-        }
-
-        $role = $role
-            ->withName($name)
-            ->withRuleName(!empty($ruleName) ? $ruleName : null)
-            ->withDescription($description)
-            ->withUpdatedAt($timestamp);
-
-        if (!$role instanceof Role) {
-            throw new \RuntimeException('Incompatible role type');
-        }
-
-        if ($this->role === null) {
-            $this->rbacManager->addRole($role);
-        } else {
-            $this->rbacManager->updateRole($this->role->getName(), $role);
-        }
-
-        return $role;
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
     }
 
     /**
      * @return array
      */
-    private function inputs(): array
+    public function getAttributeLabels(): array
     {
-        $uniqueNameConstraint = new Constraints\Callback([
-            'callback' => function ($value, ExecutionContextInterface $context) {
-                $roleName = $this->role !== null ? $this->role->getName() : null;
-
-                if ($value !== $roleName && $this->rbacStorage->getRoleByName($value) !== null) {
-                    $context->buildViolation('This role name already exists.')
-                        ->atPath('name')
-                        ->addViolation();
-                }
-
-                if ($this->rbacStorage->getPermissionByName($value) !== null) {
-                    $context->buildViolation('This name conflicted with permission.')
-                        ->atPath('name')
-                        ->addViolation();
-                }
-            },
-        ]);
-
-        $existRuleConstraint = new Constraints\Callback([
-            'callback' => function ($value, ExecutionContextInterface $context) {
-                if (empty($value)) {
-                    return;
-                }
-
-                if ($this->rbacStorage->getRuleByName($value) === null) {
-                    $context->buildViolation('This rule name must exist.')
-                        ->atPath('ruleName')
-                        ->addViolation();
-                }
-            },
-        ]);
-
         return [
-            'name' => F::text('Name')
-                ->addConstraint(new Constraints\NotBlank())
-                ->addConstraint(new Constraints\Regex([
-                    'pattern' => '/^[a-zA-Z]+$/i',
-                ]))
-                ->addConstraint($uniqueNameConstraint),
-            'ruleName' => (new Inputs\Typeahead('Rule name', ['url' => $this->urlGenerator->generate('/rbac/rule/suggestions')]))
-                ->addConstraint($existRuleConstraint),
-            'description' => F::textarea('Description', ['rows' => 5]),
-            '' => F::submit($this->role === null ? 'Create' : 'Update'),
+            'name' => 'Name',
+            'ruleName' => 'Rule name',
+            'description' => 'Description',
         ];
     }
+
+    /**
+     * @return array
+     */
+    public function getRules(): array
+    {
+        return [
+            'name' => [
+                new RequiredHtmlOptions(Required::rule()),
+                new HasLengthHtmlOptions(HasLength::rule()->min(3)->max(255)),
+                MatchRegularExpression::rule('/^[a-zA-Z]+$/i'),
+                Callback::rule(function ($value) {
+                    $result = new Result();
+
+                    if ($this->role === null && $this->rbacStorage->getRoleByName($value) !== null) {
+                        $result->addError('This role name already exists.');
+                    }
+                    if ($this->rbacStorage->getPermissionByName($value) !== null) {
+                        $result->addError('This name conflicted with permission.');
+                    }
+
+                    return $result;
+                }),
+            ],
+            'ruleName' => [
+                new RequiredHtmlOptions(Required::rule()),
+                new HasLengthHtmlOptions(HasLength::rule()->min(3)->max(255)),
+                Callback::rule(function ($value) {
+                    $result = new Result();
+
+                    if ($this->rbacStorage->getRuleByName($value) === null) {
+                        $result->addError('This rule name must be exist.');
+                    }
+
+                    return $result;
+                }),
+            ],
+        ];
+    }
+
 }

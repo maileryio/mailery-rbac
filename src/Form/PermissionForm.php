@@ -12,26 +12,39 @@ declare(strict_types=1);
 
 namespace Mailery\Rbac\Form;
 
-use FormManager\Factory as F;
-use FormManager\Form;
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Yiisoft\Rbac\Manager as RbacManager;
 use Yiisoft\Rbac\Permission;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
-use Yiisoft\Router\UrlGeneratorInterface;
+use Yiisoft\Form\HtmlOptions\RequiredHtmlOptions;
+use Yiisoft\Validator\Rule\Required;
+use Yiisoft\Form\HtmlOptions\HasLengthHtmlOptions;
+use Yiisoft\Validator\Rule\HasLength;
+use Yiisoft\Validator\Rule\MatchRegularExpression;
+use Yiisoft\Validator\Rule\Callback;
+use Yiisoft\Validator\Result;
+use Yiisoft\Form\FormModel;
 
-class PermissionForm extends Form
+class PermissionForm extends FormModel
 {
+
+    /**
+     * @var string|null
+     */
+    private ?string $name = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $ruleName = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $description = null;
+
     /**
      * @var Permission|null
      */
     private ?Permission $permission = null;
-
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
 
     /**
      * @var RbacStorage
@@ -39,32 +52,12 @@ class PermissionForm extends Form
     private RbacStorage $rbacStorage;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * @param RbacManager $rbacManager
      * @param RbacStorage $rbacStorage
-     * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(RbacManager $rbacManager, RbacStorage $rbacStorage, UrlGeneratorInterface $urlGenerator)
+    public function __construct(RbacStorage $rbacStorage)
     {
-        $this->rbacManager = $rbacManager;
         $this->rbacStorage = $rbacStorage;
-        $this->urlGenerator = $urlGenerator;
-        parent::__construct($this->inputs());
-    }
-
-    /**
-     * @param string $csrf
-     * @return \self
-     */
-    public function withCsrf(string $value, string $name = '_csrf'): self
-    {
-        $this->offsetSet($name, F::hidden($value));
-
-        return $this;
+        parent::__construct();
     }
 
     /**
@@ -73,104 +66,88 @@ class PermissionForm extends Form
      */
     public function withPermission(Permission $permission): self
     {
-        $this->permission = $permission;
-        $this->offsetSet('', F::submit('Update'));
+        $new = clone $this;
+        $new->permission = $permission;
+        $new->name = $permission->getName();
+        $new->ruleName = $permission->getRuleName();
+        $new->description = $permission->getDescription();
 
-        $this['name']->setValue($permission->getName());
-        $this['ruleName']->setValue($permission->getRuleName());
-        $this['description']->setValue($permission->getDescription());
-
-        return $this;
+        return $new;
     }
 
     /**
-     * @return Permission|null
+     * @return string|null
      */
-    public function save(): ?Permission
+    public function getName(): ?string
     {
-        if (!$this->isValid()) {
-            return null;
-        }
+        return $this->name;
+    }
 
-        $name = $this['name']->getValue();
-        $ruleName = $this['ruleName']->getValue();
-        $description = $this['description']->getValue();
-        $timestamp = time();
+    /**
+     * @return string|null
+     */
+    public function getRuleName(): ?string
+    {
+        return $this->ruleName;
+    }
 
-        if ($this->permission === null) {
-            $permission = (new Permission($name))
-                ->withCreatedAt($timestamp);
-        } else {
-            $permission = clone $this->permission;
-        }
-
-        $permission = $permission
-            ->withName($name)
-            ->withRuleName(!empty($ruleName) ? $ruleName : null)
-            ->withDescription($description)
-            ->withUpdatedAt($timestamp);
-
-        if (!$permission instanceof Permission) {
-            throw new \RuntimeException('Incompatible permission type');
-        }
-
-        if ($this->permission === null) {
-            $this->rbacManager->addPermission($permission);
-        } else {
-            $this->rbacManager->updatePermission($this->permission->getName(), $permission);
-        }
-
-        return $permission;
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
     }
 
     /**
      * @return array
      */
-    private function inputs(): array
+    public function getAttributeLabels(): array
     {
-        $uniqueNameConstraint = new Constraints\Callback([
-            'callback' => function ($value, ExecutionContextInterface $context) {
-                $permissionName = $this->permission !== null ? $this->permission->getName() : null;
-
-                if ($value !== $permissionName && $this->rbacStorage->getPermissionByName($value) !== null) {
-                    $context->buildViolation('This permission name already exists.')
-                        ->atPath('name')
-                        ->addViolation();
-                }
-
-                if ($this->rbacStorage->getRoleByName($value) !== null) {
-                    $context->buildViolation('This name conflicted with role.')
-                        ->atPath('name')
-                        ->addViolation();
-                }
-            },
-        ]);
-
-        $existRuleConstraint = new Constraints\Callback([
-            'callback' => function ($value, ExecutionContextInterface $context) {
-                if (empty($value)) {
-                    return;
-                }
-
-                if ($this->rbacStorage->getRuleByName($value) === null) {
-                    $context->buildViolation('This rule name must exist.')
-                        ->atPath('ruleName')
-                        ->addViolation();
-                }
-            },
-        ]);
-
         return [
-            'name' => F::text('Name')
-                ->addConstraint(new Constraints\NotBlank())
-                ->addConstraint(new Constraints\Regex([
-                    'pattern' => '/^[a-zA-Z]+$/i',
-                ]))
-                ->addConstraint($uniqueNameConstraint),
-            'ruleName' => (new Inputs\Typeahead('Rule name', ['url' => $this->urlGenerator->generate('/rbac/rule/suggestions')]))
-                ->addConstraint($existRuleConstraint),
-            'description' => F::textarea('Description', ['rows' => 5]),
-            '' => F::submit($this->role === null ? 'Create' : 'Update'),
+            'name' => 'Name',
+            'ruleName' => 'Rule name',
+            'description' => 'Description',
         ];
     }
+
+    /**
+     * @return array
+     */
+    public function getRules(): array
+    {
+        return [
+            'name' => [
+                new RequiredHtmlOptions(Required::rule()),
+                new HasLengthHtmlOptions(HasLength::rule()->min(3)->max(255)),
+                MatchRegularExpression::rule('/^[a-zA-Z]+$/i'),
+                Callback::rule(function ($value) {
+                    $result = new Result();
+
+                    if ($this->permission === null && $this->rbacStorage->getPermissionByName($value) !== null) {
+                        $result->addError('This permission name already exists.');
+                    }
+                    if ($this->rbacStorage->getRoleByName($value) !== null) {
+                        $result->addError('This name conflicted with role.');
+                    }
+
+                    return $result;
+                }),
+            ],
+            'ruleName' => [
+                new RequiredHtmlOptions(Required::rule()),
+                new HasLengthHtmlOptions(HasLength::rule()->min(3)->max(255)),
+                Callback::rule(function ($value) {
+                    $result = new Result();
+
+                    if ($this->rbacStorage->getRuleByName($value) === null) {
+                        $result->addError('This rule name must be exist.');
+                    }
+
+                    return $result;
+                }),
+            ],
+        ];
+    }
+
 }
