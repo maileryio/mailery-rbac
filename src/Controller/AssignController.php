@@ -19,7 +19,8 @@ use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Yiisoft\Rbac\Manager as RbacManager;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
-use Yiisoft\Yii\Api\ResponseFactory\JsonResponseFactory;
+use Yiisoft\DataResponse\DataResponseFactoryInterface;
+use Yiisoft\DataResponse\Formatter\JsonDataResponseFormatter;
 use Yiisoft\Http\Status;
 
 class AssignController
@@ -35,9 +36,9 @@ class AssignController
     private ResponseFactoryInterface $responseFactory;
 
     /**
-     * @var JsonResponseFactory
+     * @var DataResponseFactoryInterface
      */
-    private JsonResponseFactory $jsonResponseFactory;
+    private DataResponseFactoryInterface $dataResponseFactory;
 
     /**
      * @var RbacManager
@@ -52,14 +53,14 @@ class AssignController
     /**
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
-     * @param JsonResponseFactory $jsonResponseFactory
+     * @param DataResponseFactoryInterface $dataResponseFactory
      * @param RbacManager $rbacManager
      * @param RbacStorage $rbacStorage
      */
     public function __construct(
         ViewRenderer $viewRenderer,
         ResponseFactoryInterface $responseFactory,
-        JsonResponseFactory $jsonResponseFactory,
+        DataResponseFactoryInterface $dataResponseFactory,
         RbacManager $rbacManager,
         RbacStorage $rbacStorage
     ) {
@@ -68,7 +69,7 @@ class AssignController
             ->withViewPath(dirname(dirname(__DIR__)) . '/views');
 
         $this->responseFactory = $responseFactory;
-        $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->dataResponseFactory = $dataResponseFactory;
         $this->rbacManager = $rbacManager;
         $this->rbacStorage = $rbacStorage;
     }
@@ -84,8 +85,9 @@ class AssignController
                 ->createResponse(Status::NOT_FOUND);
         }
 
-        return $this->jsonResponseFactory
-            ->createResponse($this->getAssignedItems($currentItem));
+        return $this->dataResponseFactory
+            ->createResponse($this->getAssignedItems($currentItem))
+            ->withResponseFormatter(new JsonDataResponseFormatter());
     }
 
     /**
@@ -99,8 +101,9 @@ class AssignController
                 ->createResponse(Status::NOT_FOUND);
         }
 
-        return $this->jsonResponseFactory
-            ->createResponse($this->getUnassignedItems($currentItem));
+        return $this->dataResponseFactory
+            ->createResponse($this->getUnassignedItems($currentItem))
+            ->withResponseFormatter(new JsonDataResponseFormatter());
     }
 
     /**
@@ -127,14 +130,15 @@ class AssignController
             }
         }
 
-        return $this->jsonResponseFactory
+        return $this->dataResponseFactory
             ->createResponse([
                 'success' => true,
                 'data' => [
                     'assigned' => $this->getAssignedItems($currentItem),
                     'unassigned' => $this->getUnassignedItems($currentItem),
                 ],
-            ]);
+            ])
+            ->withResponseFormatter(new JsonDataResponseFormatter());
     }
 
     /**
@@ -160,14 +164,15 @@ class AssignController
             }
         }
 
-        return $this->jsonResponseFactory
+        return $this->dataResponseFactory
             ->createResponse([
                 'success' => true,
                 'data' => [
                     'assigned' => $this->getAssignedItems($currentItem),
                     'unassigned' => $this->getUnassignedItems($currentItem),
                 ],
-            ]);
+            ])
+            ->withResponseFormatter(new JsonDataResponseFormatter());
     }
 
     /**
