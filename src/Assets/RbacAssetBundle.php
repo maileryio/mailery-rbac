@@ -25,7 +25,7 @@ class RbacAssetBundle extends AssetBundle
     /**
      * {@inheritdoc}
      */
-    public ?string $baseUrl = '@web/@maileryio/mailery-rbac-assets';
+    public ?string $baseUrl = '@assetsUrl/@maileryio/mailery-rbac-assets';
 
     /**
      * {@inheritdoc}
