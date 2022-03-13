@@ -40,7 +40,7 @@ return [
                                     return 'Roles';
                                 },
                                 'url' => static function (UrlGeneratorInterface $urlGenerator) {
-                                    return $urlGenerator->generate('/rbac/role/index');
+                                    return strtok($urlGenerator->generate('/rbac/role/index'), '?');
                                 },
                             ],
                             'rules' => [
@@ -48,7 +48,7 @@ return [
                                     return 'Rules';
                                 },
                                 'url' => static function (UrlGeneratorInterface $urlGenerator) {
-                                    return $urlGenerator->generate('/rbac/rule/index');
+                                    return strtok($urlGenerator->generate('/rbac/rule/index'), '?');
                                 },
                             ],
                             'permissions' => [
@@ -56,7 +56,7 @@ return [
                                     return 'Permissions';
                                 },
                                 'url' => static function (UrlGeneratorInterface $urlGenerator) {
-                                    return $urlGenerator->generate('/rbac/permission/index');
+                                    return strtok($urlGenerator->generate('/rbac/permission/index'), '?');
                                 },
                             ],
                         ],
