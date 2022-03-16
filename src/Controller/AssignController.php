@@ -26,31 +26,6 @@ use Yiisoft\Http\Status;
 class AssignController
 {
     /**
-     * @var ViewRenderer
-     */
-    private ViewRenderer $viewRenderer;
-
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private ResponseFactoryInterface $responseFactory;
-
-    /**
-     * @var DataResponseFactoryInterface
-     */
-    private DataResponseFactoryInterface $dataResponseFactory;
-
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
-
-    /**
-     * @var RbacStorage
-     */
-    private RbacStorage $rbacStorage;
-
-    /**
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
      * @param DataResponseFactoryInterface $dataResponseFactory
@@ -58,20 +33,15 @@ class AssignController
      * @param RbacStorage $rbacStorage
      */
     public function __construct(
-        ViewRenderer $viewRenderer,
-        ResponseFactoryInterface $responseFactory,
-        DataResponseFactoryInterface $dataResponseFactory,
-        RbacManager $rbacManager,
-        RbacStorage $rbacStorage
+        private ViewRenderer $viewRenderer,
+        private ResponseFactoryInterface $responseFactory,
+        private DataResponseFactoryInterface $dataResponseFactory,
+        private RbacManager $rbacManager,
+        private RbacStorage $rbacStorage
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
             ->withViewPath(dirname(dirname(__DIR__)) . '/views');
-
-        $this->responseFactory = $responseFactory;
-        $this->dataResponseFactory = $dataResponseFactory;
-        $this->rbacManager = $rbacManager;
-        $this->rbacStorage = $rbacStorage;
     }
 
     /**

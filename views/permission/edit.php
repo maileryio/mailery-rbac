@@ -7,7 +7,7 @@ use Mailery\Icon\Icon;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Permission $permission */
 /** @var Mailery\Rbac\Form\PermissionForm $form */
-/** @var string $csrf */
+/** @var Yiisoft\Yii\View\Csrf $csrf */
 
 $this->setTitle('Edit Permission #' . $permission->getName());
 

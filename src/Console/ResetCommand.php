@@ -15,11 +15,6 @@ use Yiisoft\Rbac\Php\Storage;
 class ResetCommand extends Command
 {
     /**
-     * @var StorageInterface
-     */
-    private StorageInterface $storage;
-
-    /**
      * @var string
      */
     protected static $defaultName = 'rbac/reset';
@@ -27,9 +22,9 @@ class ResetCommand extends Command
     /**
      * @param StorageInterface $storage
      */
-    public function __construct(StorageInterface $storage)
-    {
-        $this->storage = $storage;
+    public function __construct(
+        private StorageInterface $storage
+    ) {
         parent::__construct();
     }
 

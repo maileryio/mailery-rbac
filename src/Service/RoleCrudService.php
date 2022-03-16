@@ -2,7 +2,6 @@
 
 namespace Mailery\Rbac\Service;
 
-use Cycle\ORM\ORMInterface;
 use Mailery\Rbac\ValueObject\RoleValueObject;
 use Yiisoft\Rbac\Role;
 use Yiisoft\Rbac\Manager as RbacManager;
@@ -10,26 +9,11 @@ use Yiisoft\Rbac\Manager as RbacManager;
 class RoleCrudService
 {
     /**
-     * @var ORMInterface
-     */
-    private ORMInterface $orm;
-
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
-
-    /**
-     * @param ORMInterface $orm
      * @param RbacManager $rbacManager
      */
     public function __construct(
-        ORMInterface $orm,
-        RbacManager $rbacManager
-    ) {
-        $this->orm = $orm;
-        $this->rbacManager = $rbacManager;
-    }
+        private RbacManager $rbacManager
+    ) {}
 
     /**
      * @param RoleValueObject $valueObject

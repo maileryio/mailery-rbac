@@ -1,31 +1,26 @@
 <?php
 
-use Yiisoft\Html\Html;
 use Yiisoft\Form\Widget\Form;
 use Mailery\Rbac\Widget\TypeheadInput;
 use Yiisoft\Form\Helper\HtmlForm;
 
 /** @var Yiisoft\Form\Widget\Field $field */
 /** @var Yiisoft\View\WebView $this */
-/** @var Mailery\Rbac\Form\PermissionForm $form */
-/** @var string $csrf */
+/** @var Yiisoft\Form\FormModelInterface $form */
+/** @var Yiisoft\Yii\View\Csrf $csrf */
 
 ?>
 <div class="row">
     <div class="col-12 col-xl-4">
         <?= Form::widget()
-            ->options(
-                [
-                    'id' => 'form-permission',
-                    'csrf' => $csrf,
-                    'enctype' => 'multipart/form-data',
-                ]
-            )
-            ->begin(); ?>
+                ->csrf($csrf)
+                ->id('permission-form')
+                ->begin(); ?>
 
-        <?= $field->config($form, 'name'); ?>
+        <?= $field->text($form, 'name')
+                ->autofocus(); ?>
 
-        <?= $field->config($form, 'ruleName')
+        <?= $field->text($form, 'ruleName')
                 ->template(strtr(
                     "{label}\n{input}\n{hint}\n{error}",
                     [
@@ -36,18 +31,11 @@ use Yiisoft\Form\Helper\HtmlForm;
                     ]
                 )); ?>
 
-        <?= $field->config($form, 'description')
-                ->textArea([
-                    'rows' => 5,
-                ]);
-        ?>
+        <?= $field->textArea($form, 'description', ['rows()' => [5]]); ?>
 
-        <?= Html::submitButton(
-            'Save',
-            [
-                'class' => 'btn btn-primary float-right mt-2',
-            ]
-        ); ?>
+        <?= $field->submitButton()
+                ->class('btn btn-primary float-right mt-2')
+                ->value('Save'); ?>
 
         <?= Form::end(); ?>
     </div>

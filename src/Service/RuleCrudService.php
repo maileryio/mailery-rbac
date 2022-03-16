@@ -2,7 +2,6 @@
 
 namespace Mailery\Rbac\Service;
 
-use Cycle\ORM\ORMInterface;
 use Mailery\Rbac\ValueObject\RuleValueObject;
 use Yiisoft\Rbac\Rule;
 use Yiisoft\Rbac\Manager as RbacManager;
@@ -10,26 +9,11 @@ use Yiisoft\Rbac\Manager as RbacManager;
 class RuleCrudService
 {
     /**
-     * @var ORMInterface
-     */
-    private ORMInterface $orm;
-
-    /**
-     * @var RbacManager
-     */
-    private RbacManager $rbacManager;
-
-    /**
-     * @param ORMInterface $orm
      * @param RbacManager $rbacManager
      */
     public function __construct(
-        ORMInterface $orm,
-        RbacManager $rbacManager
-    ) {
-        $this->orm = $orm;
-        $this->rbacManager = $rbacManager;
-    }
+        private RbacManager $rbacManager
+    ) {}
 
     /**
      * @param RuleValueObject $valueObject

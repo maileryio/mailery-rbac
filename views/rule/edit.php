@@ -7,7 +7,7 @@ use Mailery\Icon\Icon;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Rule $rule */
 /** @var Mailery\Rbac\Form\RuleForm $form */
-/** @var string $csrf */
+/** @var Yiisoft\Yii\View\Csrf $csrf */
 
 $this->setTitle('Edit Rule #' . $rule->getName());
 

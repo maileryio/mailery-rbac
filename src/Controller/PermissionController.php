@@ -27,34 +27,10 @@ use Yiisoft\Rbac\StorageInterface as RbacStorage;
 use Mailery\Rbac\Service\PermissionCrudService;
 use Mailery\Rbac\ValueObject\PermissionValueObject;
 use Yiisoft\Validator\ValidatorInterface;
+use Yiisoft\Router\CurrentRoute;
 
 class PermissionController
 {
-    /**
-     * @var ViewRenderer
-     */
-    private ViewRenderer $viewRenderer;
-
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private ResponseFactoryInterface $responseFactory;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * @var RbacStorage
-     */
-    private RbacStorage $rbacStorage;
-
-    /**
-     * @var PermissionCrudService
-     */
-    private PermissionCrudService $permissionCrudService;
-
     /**
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
@@ -63,20 +39,15 @@ class PermissionController
      * @param PermissionCrudService $permissionCrudService
      */
     public function __construct(
-        ViewRenderer $viewRenderer,
-        ResponseFactoryInterface $responseFactory,
-        UrlGeneratorInterface $urlGenerator,
-        RbacStorage $rbacStorage,
-        PermissionCrudService $permissionCrudService
+        private ViewRenderer $viewRenderer,
+        private ResponseFactoryInterface $responseFactory,
+        private UrlGeneratorInterface $urlGenerator,
+        private RbacStorage $rbacStorage,
+        private PermissionCrudService $permissionCrudService
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
             ->withViewPath(dirname(dirname(__DIR__)) . '/views');
-
-        $this->responseFactory = $responseFactory;
-        $this->urlGenerator = $urlGenerator;
-        $this->rbacStorage = $rbacStorage;
-        $this->permissionCrudService = $permissionCrudService;
     }
 
     /**
@@ -97,12 +68,12 @@ class PermissionController
     }
 
     /**
-     * @param Request $request
+     * @param CurrentRoute $currentRoute
      * @return Response
      */
-    public function view(Request $request): Response
+    public function view(CurrentRoute $currentRoute): Response
     {
-        $name = $request->getAttribute('name');
+        $name = $currentRoute->getArgument('name');
         if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
             return $this->responseFactory
                 ->createResponse(Status::NOT_FOUND);
@@ -135,14 +106,15 @@ class PermissionController
 
     /**
      * @param Request $request
+     * @param CurrentRoute $currentRoute
      * @param ValidatorInterface $validator
      * @param PermissionForm $form
      * @return Response
      */
-    public function edit(Request $request, ValidatorInterface $validator, PermissionForm $form): Response
+    public function edit(Request $request, CurrentRoute $currentRoute, ValidatorInterface $validator, PermissionForm $form): Response
     {
         $body = $request->getParsedBody();
-        $name = $request->getAttribute('name');
+        $name = $currentRoute->getArgument('name');
         if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
             return $this->responseFactory->createResponse(Status::NOT_FOUND);
         }
@@ -162,12 +134,12 @@ class PermissionController
     }
 
     /**
-     * @param Request $request
+     * @param CurrentRoute $currentRoute
      * @return Response
      */
-    public function delete(Request $request): Response
+    public function delete(CurrentRoute $currentRoute): Response
     {
-        $name = $request->getAttribute('name');
+        $name = $currentRoute->getArgument('name');
         if (empty($name) || ($permission = $this->rbacStorage->getPermissionByName($name)) === null) {
             return $this->responseFactory
                 ->createResponse(Status::NOT_FOUND);

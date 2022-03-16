@@ -14,9 +14,7 @@ namespace Mailery\Rbac\Form;
 
 use Yiisoft\Rbac\Permission;
 use Yiisoft\Rbac\StorageInterface as RbacStorage;
-use Yiisoft\Form\HtmlOptions\RequiredHtmlOptions;
 use Yiisoft\Validator\Rule\Required;
-use Yiisoft\Form\HtmlOptions\HasLengthHtmlOptions;
 use Yiisoft\Validator\Rule\HasLength;
 use Yiisoft\Validator\Rule\MatchRegularExpression;
 use Yiisoft\Validator\Rule\Callback;
@@ -47,16 +45,11 @@ class PermissionForm extends FormModel
     private ?Permission $permission = null;
 
     /**
-     * @var RbacStorage
-     */
-    private RbacStorage $rbacStorage;
-
-    /**
      * @param RbacStorage $rbacStorage
      */
-    public function __construct(RbacStorage $rbacStorage)
-    {
-        $this->rbacStorage = $rbacStorage;
+    public function __construct(
+        private RbacStorage $rbacStorage
+    ) {
         parent::__construct();
     }
 
@@ -118,8 +111,8 @@ class PermissionForm extends FormModel
     {
         return [
             'name' => [
-                new RequiredHtmlOptions(Required::rule()),
-                new HasLengthHtmlOptions(HasLength::rule()->min(3)->max(255)),
+                Required::rule(),
+                HasLength::rule()->min(3)->max(255),
                 MatchRegularExpression::rule('/^[a-zA-Z]+$/i'),
                 Callback::rule(function ($value) {
                     $result = new Result();
@@ -135,8 +128,8 @@ class PermissionForm extends FormModel
                 }),
             ],
             'ruleName' => [
-                new RequiredHtmlOptions(Required::rule()),
-                new HasLengthHtmlOptions(HasLength::rule()->min(3)->max(255)),
+                Required::rule(),
+                HasLength::rule()->min(3)->max(255),
                 Callback::rule(function ($value) {
                     $result = new Result();
 

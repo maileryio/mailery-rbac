@@ -12,17 +12,11 @@ use Mailery\Rbac\Assets\RbacAssetBundle;
 class AssetBundleMiddleware implements MiddlewareInterface
 {
     /**
-     * @var AssetBundleRegistry
-     */
-    private AssetBundleRegistry $assetBundleRegistry;
-
-    /**
      * @param AssetBundleRegistry $assetBundleRegistry
      */
-    public function __construct(AssetBundleRegistry $assetBundleRegistry)
-    {
-        $this->assetBundleRegistry = $assetBundleRegistry;
-    }
+    public function __construct(
+        private AssetBundleRegistry $assetBundleRegistry
+    ) {}
 
     /**
      * @param ServerRequestInterface $request

@@ -7,7 +7,7 @@ use Mailery\Widget\Link\Link;
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Role $role */
-/** @var string $csrf */
+/** @var Yiisoft\Yii\View\Csrf $csrf */
 /** @var bool $submitted */
 
 $this->setTitle($role->getName());
@@ -79,6 +79,8 @@ $this->setTitle($role->getName());
 <div class="row">
     <div class="col-12">
         <ui-dual-treeview
+            csrf-name="<?= $csrf->getParameterName(); ?>"
+            csrf-value="<?= $csrf->getToken(); ?>"
             fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $role->getName(), 'type' => $role->getType()]); ?>"
             fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $role->getName(), 'type' => $role->getType()]); ?>"
             post-assign-url="<?= $urlGenerator->generate('/rbac/assign', ['name' => $role->getName(), 'type' => $role->getType()]); ?>"

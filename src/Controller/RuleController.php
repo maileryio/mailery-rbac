@@ -30,39 +30,10 @@ use Yiisoft\DataResponse\Formatter\JsonDataResponseFormatter;
 use Mailery\Rbac\ValueObject\RuleValueObject;
 use Mailery\Rbac\Service\RuleCrudService;
 use Yiisoft\Validator\ValidatorInterface;
+use Yiisoft\Router\CurrentRoute;
 
 class RuleController
 {
-    /**
-     * @var ViewRenderer
-     */
-    private ViewRenderer $viewRenderer;
-
-    /**
-     * @var ResponseFactoryInterface
-     */
-    private ResponseFactoryInterface $responseFactory;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * @var DataResponseFactoryInterface
-     */
-    private DataResponseFactoryInterface $dataResponseFactory;
-
-    /**
-     * @var RbacStorage
-     */
-    private RbacStorage $rbacStorage;
-
-    /**
-     * @var RuleCrudService
-     */
-    private RuleCrudService $ruleCrudService;
-
     /**
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
@@ -72,22 +43,16 @@ class RuleController
      * @param RuleCrudService $ruleCrudService
      */
     public function __construct(
-        ViewRenderer $viewRenderer,
-        ResponseFactoryInterface $responseFactory,
-        UrlGeneratorInterface $urlGenerator,
-        DataResponseFactoryInterface $dataResponseFactory,
-        RbacStorage $rbacStorage,
-        RuleCrudService $ruleCrudService
+        private ViewRenderer $viewRenderer,
+        private ResponseFactoryInterface $responseFactory,
+        private UrlGeneratorInterface $urlGenerator,
+        private DataResponseFactoryInterface $dataResponseFactory,
+        private RbacStorage $rbacStorage,
+        private RuleCrudService $ruleCrudService
     ) {
         $this->viewRenderer = $viewRenderer
             ->withController($this)
             ->withViewPath(dirname(dirname(__DIR__)) . '/views');
-
-        $this->responseFactory = $responseFactory;
-        $this->urlGenerator = $urlGenerator;
-        $this->dataResponseFactory = $dataResponseFactory;
-        $this->rbacStorage = $rbacStorage;
-        $this->ruleCrudService = $ruleCrudService;
     }
 
     /**
@@ -108,12 +73,12 @@ class RuleController
     }
 
     /**
-     * @param Request $request
+     * @param CurrentRoute $currentRoute
      * @return Response
      */
-    public function view(Request $request): Response
+    public function view(CurrentRoute $currentRoute): Response
     {
-        $name = $request->getAttribute('name');
+        $name = $currentRoute->getArgument('name');
         if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
             return $this->responseFactory
                 ->createResponse(Status::NOT_FOUND);
@@ -146,14 +111,15 @@ class RuleController
 
     /**
      * @param Request $request
+     * @param CurrentRoute $currentRoute
      * @param ValidatorInterface $validator
      * @param RuleForm $form
      * @return Response
      */
-    public function edit(Request $request, ValidatorInterface $validator, RuleForm $form): Response
+    public function edit(Request $request, CurrentRoute $currentRoute, ValidatorInterface $validator, RuleForm $form): Response
     {
         $body = $request->getParsedBody();
-        $name = $request->getAttribute('name');
+        $name = $currentRoute->getArgument('name');
         if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
             return $this->responseFactory->createResponse(Status::NOT_FOUND);
         }
@@ -173,12 +139,12 @@ class RuleController
     }
 
     /**
-     * @param Request $request
+     * @param CurrentRoute $currentRoute
      * @return Response
      */
-    public function delete(Request $request): Response
+    public function delete(CurrentRoute $currentRoute): Response
     {
-        $name = $request->getAttribute('name');
+        $name = $currentRoute->getArgument('name');
         if (empty($name) || ($rule = $this->rbacStorage->getRuleByName($name)) === null) {
             return $this->responseFactory
                 ->createResponse(Status::NOT_FOUND);

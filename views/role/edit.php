@@ -7,7 +7,7 @@ use Mailery\Icon\Icon;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Role $role */
 /** @var Mailery\Rbac\Form\RoleForm $form */
-/** @var string $csrf */
+/** @var Yiisoft\Yii\View\Csrf $csrf */
 
 $this->setTitle('Edit Role #' . $role->getName());
 

@@ -4,7 +4,7 @@
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Mailery\Rbac\Form\RoleForm $form */
-/** @var string $csrf */
+/** @var Yiisoft\Yii\View\Csrf $csrf */
 
 $this->setTitle('New Role');
 
