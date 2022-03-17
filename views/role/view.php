@@ -18,6 +18,7 @@ $this->setTitle($role->getName());
             <h1 class="h3">Role #<?= $role->getName(); ?></h1>
             <div class="btn-toolbar float-right">
                 <?= Link::widget()
+                    ->csrf($csrf)
                     ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1'])->render() . ' Delete')
                     ->method('delete')
                     ->href($urlGenerator->generate('/rbac/role/delete', ['name' => $role->getName()]))
@@ -79,8 +80,8 @@ $this->setTitle($role->getName());
 <div class="row">
     <div class="col-12">
         <ui-dual-treeview
-            csrf-name="<?= $csrf->getParameterName(); ?>"
             csrf-value="<?= $csrf->getToken(); ?>"
+            csrf-header-name="<?= $csrf->getHeaderName(); ?>"
             fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $role->getName(), 'type' => $role->getType()]); ?>"
             fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $role->getName(), 'type' => $role->getType()]); ?>"
             post-assign-url="<?= $urlGenerator->generate('/rbac/assign', ['name' => $role->getName(), 'type' => $role->getType()]); ?>"

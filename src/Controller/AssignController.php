@@ -87,9 +87,7 @@ class AssignController
                 ->createResponse(Status::NOT_FOUND);
         }
 
-        $items = json_decode($request->getBody()->getContents(), true);
-
-        foreach ($items as $item) {
+        foreach ($request->getParsedBody() as $item) {
             if (($childItem = $this->getItem($item['id'], $item['type'])) === null) {
                 continue;
             }
@@ -122,9 +120,7 @@ class AssignController
                 ->createResponse(Status::NOT_FOUND);
         }
 
-        $items = json_decode($request->getBody()->getContents(), true);
-
-        foreach ($items as $item) {
+        foreach ($request->getParsedBody() as $item) {
             if (($childItem = $this->getItem($item['id'], $item['type'])) === null) {
                 continue;
             }

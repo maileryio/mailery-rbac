@@ -96,8 +96,9 @@ $this->setTitle('Access permissions');
                     ->header('Delete')
                     ->view('')
                     ->update('')
-                    ->delete(function (Permission $data, $index) use ($urlGenerator) {
+                    ->delete(function (Permission $data, $index) use ($csrf, $urlGenerator) {
                         return Link::widget()
+                            ->csrf($csrf)
                             ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1'])->render())
                             ->method('delete')
                             ->href($urlGenerator->generate('/rbac/permission/delete', ['name' => $data->getName()]))

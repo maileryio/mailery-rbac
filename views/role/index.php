@@ -95,8 +95,9 @@ $this->setTitle('User roles');
                     ->header('Delete')
                     ->view('')
                     ->update('')
-                    ->delete(function (Role $data, $index) use ($urlGenerator) {
+                    ->delete(function (Role $data, $index) use ($csrf, $urlGenerator) {
                         return Link::widget()
+                            ->csrf($csrf)
                             ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1'])->render())
                             ->method('delete')
                             ->href($urlGenerator->generate('/rbac/role/delete', ['name' => $data->getName()]))
