@@ -19,12 +19,14 @@ use Yiisoft\Rbac\Php\Storage;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Definitions\DynamicReference;
 
+/** @var array $params */
+
 return [
     StorageInterface::class => [
         'class' => Storage::class,
         '__construct()' => [
-            'directory' => DynamicReference::to(static function (Aliases $aliases) {
-                return $aliases->get('@rbac');
+            'directory' => DynamicReference::to(static function (Aliases $aliases) use($params) {
+                return $aliases->get($params['mailery/mailery-rbac']['storageDirectory']);
             }),
         ],
     ],

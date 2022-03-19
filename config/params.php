@@ -14,16 +14,14 @@ use Mailery\Rbac\Console\ResetCommand;
 use Yiisoft\Router\UrlGeneratorInterface;
 
 return [
-    'yiisoft/aliases' => [
-        'aliases' => [
-            '@rbac' => '@root/rbac',
-        ],
-    ],
-
     'yiisoft/yii-console' => [
         'commands' => [
             'rbac/reset' => ResetCommand::class,
         ],
+    ],
+
+    'mailery/mailery-rbac' => [
+        'storageDirectory' => '@root/rbac',
     ],
 
     'maileryio/mailery-menu-navbar' => [

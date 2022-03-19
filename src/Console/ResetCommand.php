@@ -23,6 +23,7 @@ class ResetCommand extends Command
      * @param StorageInterface $storage
      */
     public function __construct(
+        private \Yiisoft\Config\ConfigInterface $config,
         private StorageInterface $storage
     ) {
         parent::__construct();
@@ -33,6 +34,7 @@ class ResetCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
+            var_dump($this->config);exit;
             $defaultStorage = new Storage(
                 dirname(Builder::path('rbac-assignments')),
                 'rbac-items.php',
