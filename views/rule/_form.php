@@ -15,8 +15,7 @@ use Yiisoft\Form\Widget\Form;
                 ->id('rule-form')
                 ->begin(); ?>
 
-        <?= $field->text($form, 'name')
-                ->autofocus(); ?>
+        <?= $field->text($form, 'name')->autofocus(); ?>
 
         <?= $field->text($form, 'className'); ?>
 

@@ -17,8 +17,7 @@ use Yiisoft\Form\Helper\HtmlForm;
                 ->id('role-form')
                 ->begin(); ?>
 
-        <?= $field->text($form, 'name')
-                ->autofocus(); ?>
+        <?= $field->text($form, 'name')->autofocus(); ?>
 
         <?= $field->text($form, 'ruleName')
                 ->template(strtr(
