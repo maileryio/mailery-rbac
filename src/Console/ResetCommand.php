@@ -30,6 +30,19 @@ class ResetCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+//        $config = new \Yiisoft\Config\Config(
+//            new \Yiisoft\Config\ConfigPaths(dirname(__DIR__), 'config'),
+//            $_ENV['YII_ENV'],
+//            [
+//                \Yiisoft\Config\Modifier\RecursiveMerge::groups('params', 'rbac-assignments', 'rbac-items', 'rbac-rules'),
+//            ],
+//        );
+//
+//        var_dump(
+//            $config->get('rbac-assignments'),
+//            $config->get('rbac-items'),
+//            $config->get('rbac-rules')
+//        );
         $io = new SymfonyStyle($input, $output);
 
         try {
