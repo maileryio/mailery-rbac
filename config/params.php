@@ -63,4 +63,10 @@ return [
             ]
         ],
     ],
+
+    'maileryio/mailery-rbac' => [
+        'assignments' => [],
+        'items' => [],
+        'rules' => [],
+    ],
 ];

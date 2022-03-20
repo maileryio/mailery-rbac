@@ -52,10 +52,8 @@
         "config-plugin": {
             "common": "common.php",
             "params": "params.php",
-            "routes": "routes.php",
-            "rbac-assignments": "rbac/assignments.php",
-            "rbac-items": "rbac/items.php",
-            "rbac-rules": "rbac/rules.php"
+            "rbac": "rbac.php",
+            "routes": "routes.php"
         },
         "config-plugin-options": {
             "source-directory": "config"
