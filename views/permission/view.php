@@ -21,19 +21,19 @@ $this->setTitle($permission->getName());
                     ->csrf($csrf)
                     ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1'])->render() . ' Delete')
                     ->method('delete')
-                    ->href($urlGenerator->generate('/rbac/permission/delete', ['name' => $permission->getName()]))
+                    ->href($url->generate('/rbac/permission/delete', ['name' => $permission->getName()]))
                     ->confirm('Are you sure?')
                     ->options([
                         'class' => 'btn btn-sm btn-danger mx-sm-1 mb-2',
                     ])
                     ->encode(false);
                 ?>
-                <a class="btn btn-sm btn-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/edit', ['name' => $permission->getName()]); ?>">
+                <a class="btn btn-sm btn-secondary mx-sm-1 mb-2" href="<?= $url->generate('/rbac/permission/edit', ['name' => $permission->getName()]); ?>">
                     <?= Icon::widget()->name('pencil')->options(['class' => 'mr-1']); ?>
                     Update
                 </a>
                 <div class="btn-toolbar float-right">
-                    <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/index'); ?>">
+                    <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $url->generate('/rbac/permission/index'); ?>">
                         Back
                     </a>
                 </div>
@@ -82,10 +82,10 @@ $this->setTitle($permission->getName());
         <ui-dual-treeview
             csrf-value="<?= $csrf->getToken(); ?>"
             csrf-header-name="<?= $csrf->getHeaderName(); ?>"
-            fetch-assigned-url="<?= $urlGenerator->generate('/rbac/assigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
-            fetch-unassigned-url="<?= $urlGenerator->generate('/rbac/unassigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
-            post-assign-url="<?= $urlGenerator->generate('/rbac/assign', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
-            post-unassign-url="<?= $urlGenerator->generate('/rbac/unassign', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
+            fetch-assigned-url="<?= $url->generate('/rbac/assigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
+            fetch-unassigned-url="<?= $url->generate('/rbac/unassigned', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
+            post-assign-url="<?= $url->generate('/rbac/assign', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
+            post-unassign-url="<?= $url->generate('/rbac/unassign', ['name' => $permission->getName(), 'type' => $permission->getType()]); ?>"
         >
             <template v-slot:assign-button-content>
                 <?= Icon::widget()->name('chevron-right');?>

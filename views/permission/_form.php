@@ -24,7 +24,7 @@ use Yiisoft\Form\Helper\HtmlForm;
                     "{label}\n{input}\n{hint}\n{error}",
                     [
                         '{input}' => TypeheadInput::widget()
-                            ->url($urlGenerator->generate('/rbac/rule/suggestions'))
+                            ->url($url->generate('/rbac/rule/suggestions'))
                             ->name(HtmlForm::getInputName($form, 'ruleName'))
                             ->value(HtmlForm::getAttributeValue($form, 'ruleName') ?: ''),
                     ]

@@ -21,19 +21,19 @@ $this->setTitle($rule->getName());
                     ->csrf($csrf)
                     ->label(Icon::widget()->name('delete')->options(['class' => 'mr-1'])->render() . ' Delete')
                     ->method('delete')
-                    ->href($urlGenerator->generate('/rbac/rule/delete', ['name' => $rule->getName()]))
+                    ->href($url->generate('/rbac/rule/delete', ['name' => $rule->getName()]))
                     ->confirm('Are you sure?')
                     ->options([
                         'class' => 'btn btn-sm btn-danger mx-sm-1 mb-2',
                     ])
                     ->encode(false);
                 ?>
-                <a class="btn btn-sm btn-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/rule/edit', ['name' => $rule->getName()]); ?>">
+                <a class="btn btn-sm btn-secondary mx-sm-1 mb-2" href="<?= $url->generate('/rbac/rule/edit', ['name' => $rule->getName()]); ?>">
                     <?= Icon::widget()->name('pencil')->options(['class' => 'mr-1']); ?>
                     Update
                 </a>
                 <div class="btn-toolbar float-right">
-                    <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/rule/index'); ?>">
+                    <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $url->generate('/rbac/rule/index'); ?>">
                         Back
                     </a>
                 </div>

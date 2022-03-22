@@ -16,11 +16,11 @@ $this->setTitle('Edit Permission #' . $permission->getName());
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
             <h1 class="h3">Edit permission #<?= $permission->getName(); ?></h1>
             <div class="btn-toolbar float-right">
-                <a class="btn btn-sm btn-info mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/view', ['name' => $permission->getName()]); ?>">
+                <a class="btn btn-sm btn-info mx-sm-1 mb-2" href="<?= $url->generate('/rbac/permission/view', ['name' => $permission->getName()]); ?>">
                     <?= Icon::widget()->name('eye')->options(['class' => 'mr-1']); ?>
                     View
                 </a>
-                <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $urlGenerator->generate('/rbac/permission/index'); ?>">
+                <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $url->generate('/rbac/permission/index'); ?>">
                     Back
                 </a>
             </div>
