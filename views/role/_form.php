@@ -1,8 +1,7 @@
 <?php
 
 use Yiisoft\Form\Widget\Form;
-use Mailery\Rbac\Widget\TypeheadInput;
-use Yiisoft\Form\Helper\HtmlForm;
+use Mailery\Widget\Typeahead\Typeahead;
 
 /** @var Yiisoft\Form\Widget\Field $field */
 /** @var Yiisoft\View\WebView $this */
@@ -19,16 +18,14 @@ use Yiisoft\Form\Helper\HtmlForm;
 
         <?= $field->text($form, 'name')->autofocus(); ?>
 
-        <?= $field->text($form, 'ruleName')
-                ->template(strtr(
-                    "{label}\n{input}\n{hint}\n{error}",
-                    [
-                        '{input}' => TypeheadInput::widget()
-                            ->url($url->generate('/rbac/rule/suggestions'))
-                            ->name(HtmlForm::getInputName($form, 'ruleName'))
-                            ->value(HtmlForm::getAttributeValue($form, 'ruleName') ?: ''),
-                    ]
-                )); ?>
+        <?= $field->text(
+                $form,
+                'ruleName',
+                [
+                    'class' => Typeahead::class,
+                    'url()' => [$url->generate('/rbac/rule/suggestions')],
+                ]
+            ); ?>
 
         <?= $field->textArea($form, 'description', ['rows()' => [5]]); ?>
 

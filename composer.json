@@ -23,6 +23,7 @@
         "maileryio/mailery-web": "dev-master",
         "maileryio/widget-dataview": "dev-master",
         "maileryio/widget-link": "dev-master",
+        "maileryio/widget-typeahead": "dev-master",
         "symfony/mime": "^5.1"
     },
     "require-dev": {
