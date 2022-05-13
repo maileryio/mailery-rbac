@@ -7,7 +7,6 @@ use Mailery\Widget\Link\Link;
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Permission $permission */
-/** @var bool $submitted */
 /** @var Yiisoft\Yii\View\Csrf $csrf */
 
 $this->setTitle($permission->getName());

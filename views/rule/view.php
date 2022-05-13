@@ -8,7 +8,6 @@ use Mailery\Widget\Link\Link;
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Rule $rule */
 /** @var Yiisoft\Yii\View\Csrf $csrf */
-/** @var bool $submitted */
 
 $this->setTitle($rule->getName());
 
