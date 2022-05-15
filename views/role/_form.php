@@ -10,7 +10,7 @@ use Mailery\Widget\Typeahead\Typeahead;
 
 ?>
 <div class="row">
-    <div class="col-12 col-xl-4">
+    <div class="col-12">
         <?= Form::widget()
                 ->csrf($csrf)
                 ->id('role-form')
