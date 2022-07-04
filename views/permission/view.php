@@ -22,6 +22,12 @@ $this->setTitle($permission->getName());
                     ->method('delete')
                     ->href($url->generate('/rbac/permission/delete', ['name' => $permission->getName()]))
                     ->confirm('Are you sure?')
+                    ->afterRequest(<<<JS
+                        (res) => {
+                            res.redirected && res.url && (window.location.href = res.url);
+                        }
+                        JS
+                    )
                     ->options([
                         'class' => 'btn btn-sm btn-danger mx-sm-1 mb-2',
                     ])
