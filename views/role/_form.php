@@ -19,11 +19,11 @@ use Yiisoft\Form\Field;
 
         <?= Field::text($form, 'name')->autofocus(); ?>
 
-        <?= Field::text(
+        <?= Field::input(
+                Typeahead::class,
                 $form,
                 'ruleName',
                 [
-                    'class' => Typeahead::class,
                     'url()' => [$url->generate('/rbac/rule/suggestions')],
                 ]
             ); ?>

@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
-use Mailery\Icon\Icon;
+use Mailery\Web\Widget\FlashMessage;
+use Yiisoft\Yii\Widgets\ContentDecorator;
 
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -10,20 +11,25 @@ use Mailery\Icon\Icon;
 
 $this->setTitle('Edit Role #' . $role->getName());
 
-?><div class="row">
+?>
+
+<?= ContentDecorator::widget()
+    ->viewFile('@vendor/maileryio/mailery-rbac/views/role/_layout.php')
+    ->parameters(compact('role', 'csrf'))
+    ->begin(); ?>
+
+<div class="mb-2"></div>
+<div class="row">
     <div class="col-12">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
-            <h1 class="h3">Edit role #<?= $role->getName(); ?></h1>
-            <div class="btn-toolbar float-right">
-                <a class="btn btn-sm btn-info mx-sm-1 mb-2" href="<?= $url->generate('/rbac/role/view', ['name' => $role->getName()]); ?>">
-                    <?= Icon::widget()->name('eye')->options(['class' => 'mr-1']); ?>
-                    View
-                </a>
-                <a class="btn btn-sm btn-outline-secondary mx-sm-1 mb-2" href="<?= $url->generate('/rbac/role/index'); ?>">
-                    Back
-                </a>
-            </div>
-        </div>
+        <?= FlashMessage::widget(); ?>
     </div>
 </div>
-<?= $this->render('_form', compact('csrf', 'form')) ?>
+<div class="mb-2"></div>
+
+<div class="row">
+    <div class="col-12">
+        <?= $this->render('_form', compact('csrf', 'form')) ?>
+    </div>
+</div>
+
+<?= ContentDecorator::end() ?>

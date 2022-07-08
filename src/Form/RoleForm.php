@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Mailery\Rbac\Form;
 
 use Yiisoft\Rbac\Role;
-use Yiisoft\Rbac\StorageInterface as RbacStorage;
+use Yiisoft\Rbac\ItemsStorageInterface;
 use Yiisoft\Validator\Rule\Required;
 use Yiisoft\Validator\Rule\HasLength;
 use Yiisoft\Validator\Rule\MatchRegularExpression;
@@ -45,10 +45,10 @@ class RoleForm extends FormModel
     private ?Role $role = null;
 
     /**
-     * @param RbacStorage $rbacStorage
+     * @param ItemsStorageInterface $itemsStorage
      */
     public function __construct(
-        private RbacStorage $rbacStorage
+        private ItemsStorageInterface $itemsStorage
     ) {
         parent::__construct();
     }
@@ -117,10 +117,10 @@ class RoleForm extends FormModel
                 Callback::rule(function ($value) {
                     $result = new Result();
 
-                    if ($this->role === null && $this->rbacStorage->getRoleByName($value) !== null) {
+                    if ($this->role === null && $this->itemsStorage->getRole($value) !== null) {
                         $result->addError('This role name already exists.');
                     }
-                    if ($this->rbacStorage->getPermissionByName($value) !== null) {
+                    if ($this->itemsStorage->getPermission($value) !== null) {
                         $result->addError('This name conflicted with permission.');
                     }
 
@@ -133,7 +133,7 @@ class RoleForm extends FormModel
                 Callback::rule(function ($value) {
                     $result = new Result();
 
-                    if ($this->rbacStorage->getRuleByName($value) === null) {
+                    if ($this->itemsStorage->getRuleByName($value) === null) {
                         $result->addError('This rule name must be exist.');
                     }
 

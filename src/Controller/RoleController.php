@@ -23,7 +23,7 @@ use Yiisoft\Http\Header;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Yiisoft\Rbac\StorageInterface as RbacStorage;
+use Yiisoft\Rbac\ItemsStorageInterface;
 use Yiisoft\Validator\ValidatorInterface;
 use Mailery\Rbac\ValueObject\RoleValueObject;
 use Mailery\Rbac\Service\RoleCrudService;
@@ -35,14 +35,14 @@ class RoleController
      * @param ViewRenderer $viewRenderer
      * @param ResponseFactoryInterface $responseFactory
      * @param UrlGeneratorInterface $urlGenerator
-     * @param RbacStorage $rbacStorage
+     * @param ItemsStorageInterface $itemsStorage
      * @param RoleCrudService $roleCrudService
      */
     public function __construct(
         private ViewRenderer $viewRenderer,
         private ResponseFactoryInterface $responseFactory,
         private UrlGeneratorInterface $urlGenerator,
-        private RbacStorage $rbacStorage,
+        private ItemsStorageInterface $itemsStorage,
         private RoleCrudService $roleCrudService
     ) {
         $this->viewRenderer = $viewRenderer
@@ -58,7 +58,7 @@ class RoleController
     {
         $queryParams = $request->getQueryParams();
 
-        $dataReader = (new IterableDataReader($this->rbacStorage->getRoles()))
+        $dataReader = (new IterableDataReader($this->itemsStorage->getRoles()))
             ->withLimit(1000);
 
         $paginator = (new OffsetPaginator($dataReader))
@@ -74,7 +74,7 @@ class RoleController
     public function view(CurrentRoute $currentRoute): Response
     {
         $name = $currentRoute->getArgument('name');
-        if (empty($name) || ($role = $this->rbacStorage->getRoleByName($name)) === null) {
+        if (empty($name) || ($role = $this->itemsStorage->getRole($name)) === null) {
             return $this->responseFactory
                 ->createResponse(Status::NOT_FOUND);
         }
@@ -115,7 +115,7 @@ class RoleController
     {
         $body = $request->getParsedBody();
         $name = $currentRoute->getArgument('name');
-        if (empty($name) || ($role = $this->rbacStorage->getRoleByName($name)) === null) {
+        if (empty($name) || ($role = $this->itemsStorage->getRole($name)) === null) {
             return $this->responseFactory->createResponse(Status::NOT_FOUND);
         }
 
@@ -140,12 +140,12 @@ class RoleController
     public function delete(CurrentRoute $currentRoute): Response
     {
         $name = $currentRoute->getArgument('name');
-        if (empty($name) || ($role = $this->rbacStorage->getRoleByName($name)) === null) {
+        if (empty($name) || ($role = $this->itemsStorage->getRole($name)) === null) {
             return $this->responseFactory
                 ->createResponse(Status::NOT_FOUND);
         }
 
-        $this->rbacStorage->removeItem($role);
+        $this->itemsStorage->remove($role);
 
         return $this->responseFactory
             ->createResponse(Status::SEE_OTHER)
