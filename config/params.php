@@ -20,6 +20,12 @@ return [
         ],
     ],
 
+    'yiisoft/rbac-rules-container' => [
+        'rules' => [
+            'rules' => '@root/rbac/rules.php',
+        ],
+    ],
+
     'mailery/mailery-rbac' => [
         'storageDirectory' => '@root/rbac',
     ],

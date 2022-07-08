@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-/** @var Yiisoft\Form\Widget\Field $field */
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Mailery\Rbac\Form\PermissionForm $form */
@@ -21,4 +20,4 @@ $this->setTitle('New Permission');
     </div>
 </div>
 <div class="mb-2"></div>
-<?= $this->render('_form', compact('csrf', 'field', 'form')) ?>
+<?= $this->render('_form', compact('csrf', 'form')) ?>

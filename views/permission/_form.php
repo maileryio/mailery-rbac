@@ -1,9 +1,9 @@
 <?php
 
-use Yiisoft\Form\Widget\Form;
+use Yiisoft\Html\Tag\Form;
 use Mailery\Widget\Typeahead\Typeahead;
+use Yiisoft\Form\Field;
 
-/** @var Yiisoft\Form\Widget\Field $field */
 /** @var Yiisoft\View\WebView $this */
 /** @var Yiisoft\Form\FormModelInterface $form */
 /** @var Yiisoft\Yii\View\Csrf $csrf */
@@ -11,14 +11,15 @@ use Mailery\Widget\Typeahead\Typeahead;
 ?>
 <div class="row">
     <div class="col-12">
-        <?= Form::widget()
+        <?= Form::tag()
                 ->csrf($csrf)
                 ->id('permission-form')
-                ->begin(); ?>
+                ->post()
+                ->open(); ?>
 
-        <?= $field->text($form, 'name')->autofocus(); ?>
+        <?= Field::text($form, 'name')->autofocus(); ?>
 
-        <?= $field->text(
+        <?= Field::text(
                 $form,
                 'ruleName',
                 [
@@ -27,12 +28,11 @@ use Mailery\Widget\Typeahead\Typeahead;
                 ]
             ); ?>
 
-        <?= $field->textArea($form, 'description', ['rows()' => [5]]); ?>
+        <?= Field::textarea($form, 'description', ['rows()' => [5]]); ?>
 
-        <?= $field->submitButton()
-                ->class('btn btn-primary float-right mt-2')
-                ->value('Save'); ?>
+        <?= Field::submitButton()
+                ->content('Save'); ?>
 
-        <?= Form::end(); ?>
+        <?= Form::tag()->close(); ?>
     </div>
 </div>

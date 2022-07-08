@@ -10,26 +10,33 @@ declare(strict_types=1);
  * @copyright Copyright (c) 2020, Mailery (https://mailery.io/)
  */
 
-use Yiisoft\Rbac\RuleFactory\ClassNameRuleFactory;
-use Yiisoft\Rbac\RuleFactoryInterface;
 use Yiisoft\Access\AccessCheckerInterface;
+use Yiisoft\Rbac\AssignmentsStorageInterface;
+use Yiisoft\Rbac\ItemsStorageInterface;
 use Yiisoft\Rbac\Manager;
-use Yiisoft\Rbac\StorageInterface;
-use Yiisoft\Rbac\Php\Storage;
+use Yiisoft\Rbac\Php\AssignmentsStorage;
+use Yiisoft\Rbac\Php\ItemsStorage;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Definitions\DynamicReference;
 
 /** @var array $params */
 
 return [
-    StorageInterface::class => [
-        'class' => Storage::class,
+    AssignmentsStorageInterface::class => [
+        'class' => AssignmentsStorage::class,
         '__construct()' => [
             'directory' => DynamicReference::to(static function (Aliases $aliases) use($params) {
                 return $aliases->get($params['mailery/mailery-rbac']['storageDirectory']);
             }),
         ],
     ],
-    RuleFactoryInterface::class => ClassNameRuleFactory::class,
+    ItemsStorageInterface::class => [
+        'class' => ItemsStorage::class,
+        '__construct()' => [
+            'directory' => DynamicReference::to(static function (Aliases $aliases) use($params) {
+                return $aliases->get($params['mailery/mailery-rbac']['storageDirectory']);
+            }),
+        ],
+    ],
     AccessCheckerInterface::class => Manager::class,
 ];

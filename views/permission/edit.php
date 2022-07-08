@@ -2,7 +2,6 @@
 
 use Mailery\Icon\Icon;
 
-/** @var Yiisoft\Form\Widget\Field $field */
 /** @var Yiisoft\Yii\WebView $this */
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 /** @var Yiisoft\Rbac\Permission $permission */
@@ -27,4 +26,4 @@ $this->setTitle('Edit Permission #' . $permission->getName());
         </div>
     </div>
 </div>
-<?= $this->render('_form', compact('csrf', 'field', 'form')) ?>
+<?= $this->render('_form', compact('csrf', 'form')) ?>
