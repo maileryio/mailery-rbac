@@ -26,10 +26,6 @@ return [
         ],
     ],
 
-    'mailery/mailery-rbac' => [
-        'storageDirectory' => '@root/rbac',
-    ],
-
     'maileryio/mailery-menu-navbar' => [
         'items' => [
             'system' => [
@@ -74,5 +70,6 @@ return [
         'assignments' => [],
         'items' => [],
         'rules' => [],
+        'storageDirectory' => '@root/rbac',
     ],
 ];

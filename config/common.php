@@ -26,7 +26,7 @@ return [
         'class' => AssignmentsStorage::class,
         '__construct()' => [
             'directory' => DynamicReference::to(static function (Aliases $aliases) use($params) {
-                return $aliases->get($params['mailery/mailery-rbac']['storageDirectory']);
+                return $aliases->get($params['maileryio/mailery-rbac']['storageDirectory']);
             }),
         ],
     ],
@@ -34,7 +34,7 @@ return [
         'class' => ItemsStorage::class,
         '__construct()' => [
             'directory' => DynamicReference::to(static function (Aliases $aliases) use($params) {
-                return $aliases->get($params['mailery/mailery-rbac']['storageDirectory']);
+                return $aliases->get($params['maileryio/mailery-rbac']['storageDirectory']);
             }),
         ],
     ],

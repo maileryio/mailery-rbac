@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-use Mailery\Activity\Log\Widget\ActivityLogLink;
 use Mailery\Icon\Icon;
 use Mailery\Widget\Link\Link;
 use Mailery\Web\Widget\DateTimeFormat;
